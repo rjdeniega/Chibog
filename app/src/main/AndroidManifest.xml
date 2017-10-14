@@ -2,31 +2,36 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.dlsu.mobidev.chibog">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/chibog_logo_bordered"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/chibog_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
-
+            android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
+<<<<<<< HEAD
             android:value="AIzaSyA2WSjzp7ppTvPB_9MtMiBNmuDqXQVSK-o"/>
         <activity android:name=".MainActivity">
+=======
+            android:value="684816950445-tfqsn8no92673a01nagem3k3qt6rveru.apps.googleusercontent.com" />
+
+        <activity android:name=".SplashScreen">
+>>>>>>> 0d97b8ba7ec066e52c1b37e878e4fbaf697669b9
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>
