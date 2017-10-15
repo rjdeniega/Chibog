@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <permission
+        android:name="com.example.sal.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
 
     <application
         android:allowBackup="true"
