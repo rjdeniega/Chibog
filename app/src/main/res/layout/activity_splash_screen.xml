@@ -11,19 +11,41 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:text="Discover food locations near you"
-        android:textColor="#282121"
+        android:textColor="#1b1a1a"
         android:textSize="20sp"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
-        android:fontFamily=""
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="sans-serif-light"
         />
     <ImageView
+        android:id="@+id/splashimage"
         android:layout_height="0dp"
         android:layout_width="match_parent"
         android:layout_weight="0.5"
-        android:src="@drawable/chibog_logo"
-        android:layout_marginBottom="100dp"
+        android:src="@drawable/coffee"
+        android:scaleType="centerCrop"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:elevation="30dp"
         />
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="0.2">
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_height="90dp"
+            android:layout_width="match_parent"
+            android:src="@drawable/darkicon_text"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            />
+    </LinearLayout>
+
+
+
 
 
 
