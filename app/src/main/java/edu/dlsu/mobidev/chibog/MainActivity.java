@@ -2,6 +2,7 @@ package edu.dlsu.mobidev.chibog;
 
 import android.*;
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -63,10 +66,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         // This adds a map to the layout
-        mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(map);
-        mapFragment.getMapAsync(this);
-
+        if(isServicesOK()) initializeMap();
 
         requestPermission();
 
@@ -91,12 +91,42 @@ public class MainActivity extends AppCompatActivity implements
         });*/
 
     }
+    public boolean isServicesOK(){
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
+        if(available == ConnectionResult.SUCCESS){
+            //everything is ok
+            Log.i("Tag","Connection Success");
+            return true;
+        }else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+            //an error occured but its resolvable
+            Log.i("Tag","G API not available but resolvable");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this,available, 1);
+            dialog.show();
+        }else{
+            Log.i("Tag","Somethings definitely wrong");
+            Toast.makeText(this,"You cant make any Map requests",Toast.LENGTH_LONG).show();
+        }
+        return false;
+    }
 
+    public void initializeMap(){
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(map);
+        mapFragment.getMapAsync(this);
+    }
+
+    public boolean isPermissionGranted(){
+        //return true if permission is granted false otherwise
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+
+    }
     private void requestPermission(){
         // Asks for permission to use location services
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
+        if(!isPermissionGranted()) {
+            Log.i("Tag","permission not granted");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                //pass permissions from manifest and request code
                 requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_FINE_LOCATION);
             }
         }
@@ -106,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         // Checks if user has location services enabled
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         switch (requestCode){
             case MY_PERMISSION_FINE_LOCATION:
                 if(grantResults[0] != PackageManager.PERMISSION_GRANTED){
@@ -153,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(this,
+            if (ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 //Location Permission already granted
