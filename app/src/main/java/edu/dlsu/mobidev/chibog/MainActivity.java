@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
@@ -57,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements
     TextView place_name_text, place_address_text;
     WebView attribution_text;
     Button get_place;
+    int PROXIMITY_RADIUS = 10000;
+    double latitude, longitude;
+
     private final static int MY_PERMISSION_FINE_LOCATION = 101;
     private final static int PLACE_PICKER_REQUEST = 1;
 
@@ -66,68 +71,93 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         // This adds a map to the layout
-        if(isServicesOK()) initializeMap();
+        if (isServicesOK()) initializeMap();
 
         requestPermission();
 
-        /* Testing out google maps
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+
 
         place_name_text = (TextView) findViewById(R.id.place_name);
         place_address_text = (TextView) findViewById(R.id.place_address);
         attribution_text = (WebView) findViewById(R.id.web_attribution);
         get_place = (Button) findViewById(R.id.get_place);
+
+
+        // Testing get nearby restaurants
         get_place.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
+                Object dataTransfer[] = new Object[2];
+                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                mGoogleMap.clear();
+                String url = getUrl(latitude, longitude, "restaurant");
+                dataTransfer[0] = mGoogleMap;
+                dataTransfer[1] = url;
 
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try{
-                    Intent intent = builder.build(MainActivity.this);
-                    startActivityForResult(intent, PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e){
-                    e.printStackTrace();
-                }
+                getNearbyPlacesData.execute(dataTransfer);
+                Toast.makeText(MainActivity.this, "Showing Nearby Restaurants", Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
 
     }
-    public boolean isServicesOK(){
+
+    private String getUrl(double latitude, double longitude, String nearbyPlace) {
+
+        StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlaceUrl.append("location=" + latitude + "," + longitude);
+        googlePlaceUrl.append("&radius=" + PROXIMITY_RADIUS);
+        googlePlaceUrl.append("&type=" + nearbyPlace);
+        googlePlaceUrl.append("&sensor=true");
+        //TODO Ira I need a server key I'm not authorized to access
+        googlePlaceUrl.append("&key=" + "AIzaSyA2WSjzp7ppTvPB_9MtMiBNmuDqXQVSK-o");
+
+        Log.d("MapsActivity", "url = " + googlePlaceUrl.toString());
+
+        return googlePlaceUrl.toString();
+    }
+
+    public boolean isServicesOK() {
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
-        if(available == ConnectionResult.SUCCESS){
+        if (available == ConnectionResult.SUCCESS) {
             //everything is ok
-            Log.i("Tag","Connection Success");
+            Log.i("Tag", "Connection Success");
             return true;
-        }else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             //an error occured but its resolvable
-            Log.i("Tag","G API not available but resolvable");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this,available, 1);
+            Log.i("Tag", "G API not available but resolvable");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, 1);
             dialog.show();
-        }else{
-            Log.i("Tag","Somethings definitely wrong");
-            Toast.makeText(this,"You cant make any Map requests",Toast.LENGTH_LONG).show();
+        } else {
+            Log.i("Tag", "Somethings definitely wrong");
+            Toast.makeText(this, "You cant make any Map requests", Toast.LENGTH_LONG).show();
         }
         return false;
     }
 
-    public void initializeMap(){
+    public void initializeMap() {
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
     }
 
-    public boolean isPermissionGranted(){
+    public boolean isPermissionGranted() {
         //return true if permission is granted false otherwise
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED;
 
     }
-    private void requestPermission(){
+
+    private void requestPermission() {
         // Asks for permission to use location services
-        if(!isPermissionGranted()) {
-            Log.i("Tag","permission not granted");
+        if (!isPermissionGranted()) {
+            Log.i("Tag", "permission not granted");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 //pass permissions from manifest and request code
-                requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_FINE_LOCATION);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_FINE_LOCATION);
             }
         }
     }
@@ -136,9 +166,9 @@ public class MainActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         // Checks if user has location services enabled
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
+        switch (requestCode) {
             case MY_PERMISSION_FINE_LOCATION:
-                if(grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getApplicationContext(), "This app requires location services", Toast.LENGTH_LONG).show();
                     finish();
                 }
@@ -151,14 +181,14 @@ public class MainActivity extends AppCompatActivity implements
         // Gets the result of the place picker
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == PLACE_PICKER_REQUEST){
-            if(resultCode == RESULT_OK){
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
                 Place place = PlacePicker.getPlace(MainActivity.this, data);
                 place_name_text.setText(place.getName());
                 place_address_text.setText(place.getAddress());
-                if (place.getAttributions() == null){
+                if (place.getAttributions() == null) {
                     attribution_text.loadData("no attribution", "text/html; charset=utf-8", "UTF-8");
-                }else{
+                } else {
                     attribution_text.loadData(place.getAttributions().toString(), "text/html; charset=utf-8", "UTF-8");
                 }
             }
@@ -176,9 +206,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap)
-    {
-        mGoogleMap=googleMap;
+    public void onMapReady(GoogleMap googleMap) {
+        mGoogleMap = googleMap;
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -192,8 +221,7 @@ public class MainActivity extends AppCompatActivity implements
                 //Request Location Permission
                 requestPermission();
             }
-        }
-        else {
+        } else {
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
         }
@@ -223,18 +251,23 @@ public class MainActivity extends AppCompatActivity implements
 
 
     @Override
-    public void onConnectionSuspended(int i) {}
+    public void onConnectionSuspended(int i) {
+    }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {}
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+    }
 
     @Override
-    public void onLocationChanged(Location location)
-    {
+    public void onLocationChanged(Location location) {
         mLastLocation = location;
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
+
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -245,7 +278,11 @@ public class MainActivity extends AppCompatActivity implements
         mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
         //move map camera
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,17));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
 
     }
 
