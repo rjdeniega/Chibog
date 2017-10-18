@@ -20,6 +20,11 @@ public class DataParser {
 
         String placeName = "-NA-";
         String vicinity = "-NA-";
+        String latitude= "";
+        String longitude="";
+        String reference="";
+
+        Log.d("DataParser","jsonobject ="+googlePlaceJSON.toString());
 
         //extract data from JSON and add it to hashmap
         try {
@@ -29,16 +34,17 @@ public class DataParser {
             if (!googlePlaceJSON.isNull("vicinity"))
                 vicinity = googlePlaceJSON.getString("vicinity");
 
-            String latitude = googlePlaceJSON.getJSONObject("geometry").getJSONObject("location").getString("lat");
-            String longitude = googlePlaceJSON.getJSONObject("geometry").getJSONObject("location").getString("log");
-            String reference = googlePlaceJSON.getString("reference");
+            latitude = googlePlaceJSON.getJSONObject("geometry").getJSONObject("location").getString("lat");
+            longitude = googlePlaceJSON.getJSONObject("geometry").getJSONObject("location").getString("lng");
+
+            reference = googlePlaceJSON.getString("reference");
 
             googlePlaceMap.put("place_name", placeName);
             googlePlaceMap.put("vicinity", vicinity);
-            googlePlaceMap.put("latitude", latitude);
-            googlePlaceMap.put("place_name", placeName);
-            googlePlaceMap.put("longitude", longitude);
+            googlePlaceMap.put("lat", latitude);
+            googlePlaceMap.put("lng", longitude);
             googlePlaceMap.put("reference", reference);
+
 
 
         } catch (JSONException e) {
