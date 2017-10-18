@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements
         googlePlaceUrl.append("&type=" + nearbyPlace);
         googlePlaceUrl.append("&sensor=true");
         //TODO Ira I need a server key I'm not authorized to access
-        googlePlaceUrl.append("&key=" + "AIzaSyA2WSjzp7ppTvPB_9MtMiBNmuDqXQVSK-o");
+        googlePlaceUrl.append("&key=" + "AIzaSyDwD_rwM8VjiRZFnPBJKyLy5Eu9Bs57mKA");
 
         Log.d("MapsActivity", "url = " + googlePlaceUrl.toString());
 
