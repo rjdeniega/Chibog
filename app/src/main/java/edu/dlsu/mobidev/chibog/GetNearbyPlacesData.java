@@ -1,6 +1,7 @@
 package edu.dlsu.mobidev.chibog;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +39,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     @Override
     protected void onPostExecute(String s) {
         List<HashMap<String, String>> nearbyPlaceList;
+        Log.i("Data",s);
         DataParser parser = new DataParser();
         nearbyPlaceList = parser.parse(s);
         showNearbyPlaces(nearbyPlaceList);

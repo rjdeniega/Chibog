@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
     TextView place_name_text, place_address_text;
     WebView attribution_text;
     Button get_place;
-    int PROXIMITY_RADIUS = 10000;
+    int PROXIMITY_RADIUS = 100000;
     double latitude, longitude;
 
     private final static int MY_PERMISSION_FINE_LOCATION = 101;
@@ -72,13 +72,11 @@ public class MainActivity extends AppCompatActivity implements
 
         // This adds a map to the layout
         if (isServicesOK()) initializeMap();
-
         requestPermission();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window w = getWindow(); // in Activity's onCreate() for instance
-            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
+        //set-up transparent status bar
+        Window w = getWindow();
+        w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
 
         place_name_text = (TextView) findViewById(R.id.place_name);
@@ -107,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private String getUrl(double latitude, double longitude, String nearbyPlace) {
 
+        //builds URL for search
         StringBuilder googlePlaceUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlaceUrl.append("location=" + latitude + "," + longitude);
         googlePlaceUrl.append("&radius=" + PROXIMITY_RADIUS);

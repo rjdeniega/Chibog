@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="edu.dlsu.mobidev.chibog.MainActivity">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,40 +12,46 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:layout_alignParentTop="true"
+        android:layout_height="0dp"
+        android:layout_weight="0.7"
         tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
+        >
+        <Button
+            android:id="@+id/get_place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Place"
+            android:layout_centerInParent="true"/>
 
-    <Button
-        android:id="@+id/get_place"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get Place"
-        android:layout_below="@id/map"
-        android:layout_centerInParent="true"/>
+        <TextView
+            android:layout_marginTop="60dp"
+            android:id="@+id/place_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Place Name"
+            android:layout_below="@id/get_place"/>
 
-    <TextView
-        android:layout_marginTop="60dp"
-        android:id="@+id/place_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Place Name"
-        android:layout_below="@id/get_place"/>
+        <TextView
+            android:id="@+id/place_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Place Address"
+            android:layout_below="@id/place_name"/>
 
-    <TextView
-        android:id="@+id/place_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Place Address"
-        android:layout_below="@id/place_name"/>
-    
-    <WebView
-        android:id="@+id/web_attribution"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Attribution"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"/>
+        <WebView
+            android:id="@+id/web_attribution"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attribution"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"/>
 
-</RelativeLayout>
+    </RelativeLayout>
+
+
+</LinearLayout>
