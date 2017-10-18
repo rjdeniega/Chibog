@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
     TextView place_name_text, place_address_text;
     WebView attribution_text;
     Button get_place;
-    int PROXIMITY_RADIUS = 100000;
+    int PROXIMITY_RADIUS = 500;
     double latitude, longitude;
 
     private final static int MY_PERMISSION_FINE_LOCATION = 101;
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
     }
+
 
     private String getUrl(double latitude, double longitude, String nearbyPlace) {
 

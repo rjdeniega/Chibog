@@ -43,6 +43,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         DataParser parser = new DataParser();
         nearbyPlaceList = parser.parse(s);
         showNearbyPlaces(nearbyPlaceList);
+
     }
 
     private void showNearbyPlaces(List<HashMap<String, String>> nearbyPlaceList)
@@ -63,8 +64,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
             gMap.addMarker(markerOptions);
-            gMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            gMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+            gMap.animateCamera(CameraUpdateFactory.zoomTo(16));
         }
     }
 
