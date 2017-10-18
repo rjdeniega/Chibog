@@ -33,12 +33,12 @@ public class DataParser {
             String longitude = googlePlaceJSON.getJSONObject("geometry").getJSONObject("location").getString("log");
             String reference = googlePlaceJSON.getString("reference");
 
-            googlePlaceMap.put("place_name",placeName);
-            googlePlaceMap.put("vicinity",vicinity);
-            googlePlaceMap.put("latitude",latitude);
-            googlePlaceMap.put("place_name",placeName);
-            googlePlaceMap.put("longitude",longitude);
-            googlePlaceMap.put("reference",reference);
+            googlePlaceMap.put("place_name", placeName);
+            googlePlaceMap.put("vicinity", vicinity);
+            googlePlaceMap.put("latitude", latitude);
+            googlePlaceMap.put("place_name", placeName);
+            googlePlaceMap.put("longitude", longitude);
+            googlePlaceMap.put("reference", reference);
 
 
         } catch (JSONException e) {
@@ -47,13 +47,13 @@ public class DataParser {
         return googlePlaceMap;
     }
 
-    private List<HashMap<String, String>>getPlaces(JSONArray jsonArray)
-    {
+    private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) {
+        Log.i("jsonbug", jsonArray.toString());
         int count = jsonArray.length();
         List<HashMap<String, String>> placelist = new ArrayList<>();
         HashMap<String, String> placeMap;
 
-        for(int i = 0; i<count;i++) {
+        for (int i = 0; i < count; i++) {
             try {
                 placeMap = getPlace((JSONObject) jsonArray.get(i));
                 placelist.add(placeMap);
@@ -61,15 +61,15 @@ public class DataParser {
                 e.printStackTrace();
             }
         }
+
         return placelist;
     }
 
-    public List<HashMap<String, String>> parse(String jsonData)
-    {
+    public List<HashMap<String, String>> parse(String jsonData) {
         JSONArray jsonArray = null;
         JSONObject jsonObject;
 
-        Log.d("json data", jsonData);
+        Log.d("jsondata", jsonData);
 
         try {
             jsonObject = new JSONObject(jsonData);

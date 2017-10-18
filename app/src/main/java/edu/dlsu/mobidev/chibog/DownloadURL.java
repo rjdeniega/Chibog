@@ -1,5 +1,7 @@
 package edu.dlsu.mobidev.chibog;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,11 +12,11 @@ import java.net.URL;
 
 
 public class DownloadURL {
-    String data = "";
-    InputStream inputStream = null;
-    HttpURLConnection urlConnection = null;
 
     public String readURL(String receivedURL) throws IOException {
+        String data = "";
+        InputStream inputStream = null;
+        HttpURLConnection urlConnection = null;
         try {
             //create URL and open connection
             URL url = new URL(receivedURL);
@@ -39,9 +41,10 @@ public class DownloadURL {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            inputStream.close();
-            urlConnection.disconnect();
+            if(inputStream != null) inputStream.close();
+            if(urlConnection!= null) urlConnection.disconnect();
         }
+        Log.d("DownloadURL","Returning data= "+data);
         return data;
     }
 }
