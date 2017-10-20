@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements
     Location mLastLocation;
     Marker mCurrLocationMarker;
 
-    TextView place_name_text, place_address_text;
-    WebView attribution_text;
     Button get_place;
     int PROXIMITY_RADIUS = 500;
     double latitude, longitude;
@@ -77,11 +75,6 @@ public class MainActivity extends AppCompatActivity implements
         //set-up transparent status bar
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
-
-        place_name_text = (TextView) findViewById(R.id.place_name);
-        place_address_text = (TextView) findViewById(R.id.place_address);
-        attribution_text = (WebView) findViewById(R.id.web_attribution);
         get_place = (Button) findViewById(R.id.get_place);
 
 
@@ -175,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Gets the result of the place picker
         super.onActivityResult(requestCode, resultCode, data);
@@ -192,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
-    }
+    }*/
 
     @Override
     public void onPause() {
@@ -224,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
         }
+        mGoogleMap.setPadding(0, 60, 0, 0);
     }
 
     protected synchronized void buildGoogleApiClient() {
