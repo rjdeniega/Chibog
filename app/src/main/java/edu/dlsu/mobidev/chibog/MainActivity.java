@@ -14,10 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,15 +73,15 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // This adds a map to the layout
         if (isServicesOK()) initializeMap();
         requestPermission();
 
-        //set-up transparent status bar
+        //set-up transparent status bar\
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         get_place = (Button) findViewById(R.id.get_place);
-
 
         // Testing get nearby restaurants
         get_place.setOnClickListener(new View.OnClickListener() {
@@ -217,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements
             buildGoogleApiClient();
             mGoogleMap.setMyLocationEnabled(true);
         }
-        mGoogleMap.setPadding(0, 60, 0, 0);
+        mGoogleMap.setPadding(0, 60, 0, 200);
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -268,8 +273,6 @@ public class MainActivity extends AppCompatActivity implements
         markerOptions.position(latLng);
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
-
         //move map camera
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
 
@@ -279,4 +282,12 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+
+    public void slideUpDown(final View view){
+        Animation bottomUp = AnimationUtils.loadAnimation(getBaseContext(),
+                R.anim.bottom_up);
+        ViewGroup hiddenPanel = (ViewGroup)findViewById(R.id.hidden_panel);
+        hiddenPanel.startAnimation(bottomUp);
+        hiddenPanel.setVisibility(View.VISIBLE);
+    }
 }
