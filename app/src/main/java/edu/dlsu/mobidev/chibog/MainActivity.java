@@ -21,6 +21,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -60,6 +61,10 @@ public class MainActivity extends AppCompatActivity implements
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
+    RelativeLayout hiddenPanel;
+    LinearLayout pullUp;
+    RelativeLayout mainScreen;
+    ImageButton closeListOfPlaces;
 
     Button get_place;
     int PROXIMITY_RADIUS = 500;
@@ -83,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         get_place = (Button) findViewById(R.id.get_place);
 
+        hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
+        mainScreen = (RelativeLayout) findViewById(R.id.main_screen);
+
         // Testing get nearby restaurants
         get_place.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +107,63 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+
+        pullUp = (LinearLayout) findViewById(R.id.pull_up);
+        closeListOfPlaces = (ImageButton) findViewById(R.id.close_list);
+
+
+        closeListOfPlaces.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation bottomDown = AnimationUtils.loadAnimation(getBaseContext(),
+                        R.anim.bottom_down);
+                hiddenPanel.startAnimation(bottomDown);
+
+                bottomDown.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        mainScreen.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        hiddenPanel.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+            }
+        });
+
+        pullUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation bottomUp = AnimationUtils.loadAnimation(getBaseContext(),
+                        R.anim.bottom_up);
+                hiddenPanel.startAnimation(bottomUp);
+                hiddenPanel.setVisibility(View.VISIBLE);
+
+                bottomUp.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mainScreen.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+            }
+        });
     }
 
 
@@ -282,12 +347,4 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
-    public void slideUpDown(final View view){
-        Animation bottomUp = AnimationUtils.loadAnimation(getBaseContext(),
-                R.anim.bottom_up);
-        ViewGroup hiddenPanel = (ViewGroup)findViewById(R.id.hidden_panel);
-        hiddenPanel.startAnimation(bottomUp);
-        hiddenPanel.setVisibility(View.VISIBLE);
-    }
 }
