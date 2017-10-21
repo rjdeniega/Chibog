@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,10 +22,12 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     String googlePlacesData;
     GoogleMap gMap;
     String url;
+    ArrayList<Place> places;
     @Override
     protected String doInBackground(Object... objects) {
         gMap = (GoogleMap) objects[0];
         url = (String) objects[1];
+        places = (ArrayList<Place>) objects[2];
 
         DownloadURL downloadURL = new DownloadURL();
         try {
@@ -63,6 +66,11 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             markerOptions.title(placeName + " : "+ vicinity);
             markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
+            // TODO figure out how to place an image from a URL. There's a ImageView na sa RecyclerView
+
+            Place place = new Place(placeName, vicinity,
+                                    googlePlace.get("icon"), lat, lng);
+            places.add(place);
             gMap.addMarker(markerOptions);
             gMap.animateCamera(CameraUpdateFactory.zoomTo(16));
         }

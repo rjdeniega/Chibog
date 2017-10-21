@@ -32,12 +32,14 @@ public class DataParser {
             String latitude = googlePlaceJSON.getJSONObject("geometry").getJSONObject("location").getString("lat");
             String longitude = googlePlaceJSON.getJSONObject("geometry").getJSONObject("location").getString("lng");
             String reference = googlePlaceJSON.getString("reference");
+            String image = googlePlaceJSON.getString("icon");
 
             googlePlaceMap.put("place_name", placeName);
             googlePlaceMap.put("vicinity", vicinity);
             googlePlaceMap.put("lat", latitude);
             googlePlaceMap.put("lng", longitude);
             googlePlaceMap.put("reference", reference);
+            googlePlaceMap.put("icon", image);
 
 
 

@@ -12,6 +12,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +48,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 import static edu.dlsu.mobidev.chibog.R.id.map;
 
 
@@ -61,10 +65,12 @@ public class MainActivity extends AppCompatActivity implements
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-    RelativeLayout hiddenPanel;
+    RelativeLayout hiddenPanel, mainScreen;
     LinearLayout pullUp;
-    RelativeLayout mainScreen;
     ImageButton closeListOfPlaces;
+    RecyclerView rvPlaces;
+    ArrayList<edu.dlsu.mobidev.chibog.Place> places;
+    TextView noPlaces;
 
     Button get_place;
     int PROXIMITY_RADIUS = 500;
@@ -88,22 +94,41 @@ public class MainActivity extends AppCompatActivity implements
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         get_place = (Button) findViewById(R.id.get_place);
 
+        noPlaces = (TextView) findViewById(R.id.no_places);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
         mainScreen = (RelativeLayout) findViewById(R.id.main_screen);
+        rvPlaces = (RecyclerView) findViewById(R.id.rv_places);
+        places = new ArrayList<>();
 
         // Testing get nearby restaurants
         get_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Object dataTransfer[] = new Object[2];
+                places.clear();
+                Object dataTransfer[] = new Object[3];
                 GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
                 mGoogleMap.clear();
                 String url = getUrl(latitude, longitude, "restaurant");
                 dataTransfer[0] = mGoogleMap;
                 dataTransfer[1] = url;
+                dataTransfer[2] = places;
 
                 getNearbyPlacesData.execute(dataTransfer);
+
                 Toast.makeText(MainActivity.this, "Showing Nearby Restaurants", Toast.LENGTH_SHORT).show();
+                rvPlaces.setVisibility(View.VISIBLE);
+                noPlaces.setVisibility(View.GONE);
+                PlaceAdapter pa = new PlaceAdapter(places);
+                pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
+                        Toast.makeText(getBaseContext(), "User clicked on " + p.getName(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+                rvPlaces.setAdapter(pa);
+                rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
+                                            LinearLayoutManager.VERTICAL, false));
             }
         });
 
@@ -111,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements
         pullUp = (LinearLayout) findViewById(R.id.pull_up);
         closeListOfPlaces = (ImageButton) findViewById(R.id.close_list);
 
-
+        // Closes the list of places
         closeListOfPlaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        // Opens the list of places loaded
         pullUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
