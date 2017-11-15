@@ -15,8 +15,8 @@ import java.util.List;
 
 public class DataParser {
 
-    public Place getPlace(JSONObject googlePlaceJSON) {
-        Place googlePlaceMap = new Place();
+    public HashMap<String, String> getPlace(JSONObject googlePlaceJSON) {
+        HashMap<String, String> googlePlaceMap = new HashMap<>();
 
         String placeName = "-NA-";
         String vicinity = "-NA-";
@@ -34,12 +34,12 @@ public class DataParser {
             String reference = googlePlaceJSON.getString("reference");
             String image = googlePlaceJSON.getString("icon");
 
-            googlePlaceMap.setName(placeName);
-            googlePlaceMap.setVicinity(vicinity);
-            googlePlaceMap.setLat(Double.parseDouble(latitude));
-            googlePlaceMap.setLng(Double.parseDouble(longitude));
-            googlePlaceMap.setReference(reference);
-            googlePlaceMap.setImageUrl(image);
+            googlePlaceMap.put("place_name", placeName);
+            googlePlaceMap.put("vicinity", vicinity);
+            googlePlaceMap.put("lat", latitude);
+            googlePlaceMap.put("lng", longitude);
+            googlePlaceMap.put("reference", reference);
+            googlePlaceMap.put("icon", image);
 
 
 
@@ -49,11 +49,11 @@ public class DataParser {
         return googlePlaceMap;
     }
 
-    private ArrayList<Place> getPlaces(JSONArray jsonArray) {
+    private List<HashMap<String, String>> getPlaces(JSONArray jsonArray) {
         Log.i("jsonbug", jsonArray.toString());
         int count = jsonArray.length();
-        ArrayList<Place> placelist = new ArrayList<>();
-        Place placeMap;
+        List<HashMap<String, String>> placelist = new ArrayList<>();
+        HashMap<String, String> placeMap;
 
         for (int i = 0; i < count; i++) {
             try {
@@ -67,7 +67,7 @@ public class DataParser {
         return placelist;
     }
 
-    public ArrayList<Place> parse(String jsonData) {
+    public List<HashMap<String, String>> parse(String jsonData) {
         JSONArray jsonArray = null;
         JSONObject jsonObject;
 

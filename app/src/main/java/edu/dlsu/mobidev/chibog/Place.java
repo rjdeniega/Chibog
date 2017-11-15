@@ -5,7 +5,7 @@ package edu.dlsu.mobidev.chibog;
  */
 
 public class Place {
-    private String name, location, imageUrl,vicinity,reference;
+    private String name, location, imageUrl;
     private Double lat, lng;
 
     public Place(){
@@ -59,21 +59,4 @@ public class Place {
     public void setLng(Double lng) {
         this.lng = lng;
     }
-
-    public String getVicinity() {
-        return vicinity;
-    }
-
-    public void setVicinity(String vicinity) {
-        this.vicinity = vicinity;
-    }
-
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
 }
-

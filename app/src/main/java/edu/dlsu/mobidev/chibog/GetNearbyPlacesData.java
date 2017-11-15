@@ -41,7 +41,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        ArrayList<Place> nearbyPlaceList;
+        List<HashMap<String, String>> nearbyPlaceList;
         Log.i("Data",s);
         DataParser parser = new DataParser();
         nearbyPlaceList = parser.parse(s);
@@ -49,17 +49,17 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     }
 
-    private void showNearbyPlaces(ArrayList<Place> nearbyPlaceList)
+    private void showNearbyPlaces(List<HashMap<String, String>> nearbyPlaceList)
     {
         for(int i = 0; i < nearbyPlaceList.size(); i++)
         {
             MarkerOptions markerOptions = new MarkerOptions();
-            Place googlePlace = nearbyPlaceList.get(i);
+            HashMap<String, String> googlePlace = nearbyPlaceList.get(i);
 
-            String placeName = googlePlace.getName();
-            String vicinity = googlePlace.getVicinity();
-            double lat = googlePlace.getLat();
-            double lng = googlePlace.getLng();
+            String placeName = googlePlace.get("place_name");
+            String vicinity = googlePlace.get("vicinity");
+            double lat = Double.parseDouble( googlePlace.get("lat"));
+            double lng = Double.parseDouble( googlePlace.get("lng"));
 
             LatLng latLng = new LatLng( lat, lng);
             markerOptions.position(latLng);
@@ -69,7 +69,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             // TODO figure out how to place an image from a URL. There's a ImageView na sa RecyclerView
 
             Place place = new Place(placeName, vicinity,
-                                    googlePlace.getImageUrl(), lat, lng);
+                                    googlePlace.get("icon"), lat, lng);
             places.add(place);
             gMap.addMarker(markerOptions);
             gMap.animateCamera(CameraUpdateFactory.zoomTo(16));
