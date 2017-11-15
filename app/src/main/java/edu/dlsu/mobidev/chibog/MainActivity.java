@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements
         //set-up transparent status bar\
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-//        get_place = (Button) findViewById(R.id.get_place);
+        get_place = (Button) findViewById(R.id.get_place);
 
         noPlaces = (TextView) findViewById(R.id.no_places);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
@@ -100,48 +100,37 @@ public class MainActivity extends AppCompatActivity implements
         rvPlaces = (RecyclerView) findViewById(R.id.rv_places);
         places = new ArrayList<>();
 
-        //Load nearby restaurants on create
-        places.clear();
-        Object dataTransfer[] = new Object[2];
-        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-        String url = getUrl(latitude, longitude, "restaurant");
-//        mGoogleMap.clear();
-        dataTransfer[0] = mGoogleMap;
-        dataTransfer[1] = url;
-//        dataTransfer[2] = places;
-        getNearbyPlacesData.execute(dataTransfer);
-        Toast.makeText(MainActivity.this, "Showing Nearby Restaurants", Toast.LENGTH_SHORT).show();
+        // Testing get nearby restaurants
+        get_place.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                places.clear();
+                Object dataTransfer[] = new Object[3];
+                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                mGoogleMap.clear();
+                String url = getUrl(latitude, longitude, "restaurant");
+                dataTransfer[0] = mGoogleMap;
+                dataTransfer[1] = url;
+                dataTransfer[2] = places;
 
-//        get_place.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                places.clear();
-//                Object dataTransfer[] = new Object[3];
-//                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-//                mGoogleMap.clear();
-//                String url = getUrl(latitude, longitude, "restaurant");
-//                dataTransfer[0] = mGoogleMap;
-//                dataTransfer[1] = url;
-//                dataTransfer[2] = places;
-//
-//                getNearbyPlacesData.execute(dataTransfer);
-//
-//                Toast.makeText(MainActivity.this, "Showing Nearby Restaurants", Toast.LENGTH_SHORT).show();
-//                rvPlaces.setVisibility(View.VISIBLE);
-//                noPlaces.setVisibility(View.GONE);
-//                PlaceAdapter pa = new PlaceAdapter(places);
-//                pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
-//                        Toast.makeText(getBaseContext(), "User clicked on " + p.getName(),
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//                rvPlaces.setAdapter(pa);
-//                rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
-//                                            LinearLayoutManager.VERTICAL, false));
-//            }
-//        });
+                getNearbyPlacesData.execute(dataTransfer);
+
+                Toast.makeText(MainActivity.this, "Showing Nearby Restaurants", Toast.LENGTH_SHORT).show();
+                rvPlaces.setVisibility(View.VISIBLE);
+                noPlaces.setVisibility(View.GONE);
+                PlaceAdapter pa = new PlaceAdapter(places);
+                pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
+                        Toast.makeText(getBaseContext(), "User clicked on " + p.getName(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+                rvPlaces.setAdapter(pa);
+                rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
+                                            LinearLayoutManager.VERTICAL, false));
+            }
+        });
 
 
         pullUp = (LinearLayout) findViewById(R.id.pull_up);
