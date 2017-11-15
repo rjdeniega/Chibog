@@ -31,4 +31,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'it.sephiroth.android.library.picasso:picasso:2.5.2.4b'
+    compile 'com.github.markushi:circlebutton:1.1'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
 }

@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<edu.dlsu.mobidev.chibog.Place> places;
     TextView noPlaces;
 
-    Button get_place;
+    View get_place;
     int PROXIMITY_RADIUS = 500;
     double latitude, longitude;
 
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements
         //set-up transparent status bar\
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        get_place = (Button) findViewById(R.id.get_place);
+        get_place = findViewById(R.id.get_place);
 
         noPlaces = (TextView) findViewById(R.id.no_places);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
