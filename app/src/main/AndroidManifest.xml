@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <permission
         android:name="com.example.sal.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
@@ -20,16 +21,19 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyA2WSjzp7ppTvPB_9MtMiBNmuDqXQVSK-o"/>
+            android:value="AIzaSyA2WSjzp7ppTvPB_9MtMiBNmuDqXQVSK-o" />
 
-        <activity android:name=".SplashScreen"
+        <activity
+            android:name=".SplashScreen"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".Favorites"></activity>
     </application>
 
 </manifest>

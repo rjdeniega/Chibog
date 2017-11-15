@@ -19,19 +19,13 @@ public class SplashScreen extends AppCompatActivity {
         Window w = getWindow(); // in Activity's onCreate() for instance
         w.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
-
-//        splashImage = (ImageView) findViewById(R.id.splashimage);
-//        RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(getResources(), src);
-//        dr.setCornerRadius(30);
-//        splashImage.setImageDrawable(dr);
-
         Thread myThread = new Thread(){
             @Override
             public void run() {
                 try {
                     //thread sleeps at 2s
                     sleep(2000);
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    Intent intent = new Intent(getApplicationContext(),Favorites.class);
                     startActivity(intent);
 
                     //go back to main activity
