@@ -27,7 +27,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     protected String doInBackground(Object... objects) {
         gMap = (GoogleMap) objects[0];
         url = (String) objects[1];
-//        places = (ArrayList<Place>) objects[2];
+        places = (ArrayList<Place>) objects[2];
 
         DownloadURL downloadURL = new DownloadURL();
         try {
