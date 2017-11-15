@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-    <!--  Gradient Bg for listrow -->
-    <!--<corners-->
-        <!--android:bottomRightRadius="30dp"-->
-        <!--android:bottomLeftRadius="30dp"-->
-        <!--android:topLeftRadius="30dp"-->
-        <!--android:topRightRadius="30dp"/>-->
-    <!--<gradient-->
-        <!--android:startColor="#ef7085"-->
-        <!--android:centerColor="#f25a64"-->
-        <!--android:endColor="#f64243"-->
-        <!--android:angle="360" />-->
-    <shape android:shape="oval">
-        <solid android:color="#fa09ad"/>
-    </shape>
+    android:shape="rectangle"
+    >
+      Gradient Bg for listrow
+    <corners
+        android:bottomRightRadius="10dp"
+        android:bottomLeftRadius="10dp"
+        android:topLeftRadius="10dp"
+        android:topRightRadius="10dp"/>
+    <gradient
+        android:startColor="#ef7085"
+        android:centerColor="#f25a64"
+        android:endColor="#f64243"
+        android:angle="360" />
+
 </shape>

@@ -19,46 +19,14 @@
             android:layout_height="match_parent"
             tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
-        <!--<Button-->
-            <!--android:id="@+id/get_place"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="50dp"-->
-            <!--android:textColor="#ffffff"-->
-            <!--android:background="@drawable/button_bg"-->
-            <!--android:layout_marginLeft="200dp"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_marginBottom="100dp"/>-->
-        <RelativeLayout
-            android:id="@+id/get_place"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_centerInParent="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="80dp">
 
-            <at.markushi.ui.CircleButton
-                android:layout_width="130dip"
-                android:layout_height="130dip"
-                app:cb_color="#313131"
-                app:cb_pressedRingWidth="20dip" />
-            <ImageView
-                android:layout_height="50dp"
-                android:layout_width="50dp"
-                android:layout_centerInParent="true"
-                android:src="@drawable/search_pink"
-               />
-
-
-        </RelativeLayout>
 
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="80dp"
-            android:elevation="70dp"
+            android:layout_height="60dp"
+            android:background="#ffffff"
+            android:elevation="40dp"
             android:layout_marginBottom="-5dp"
             android:layout_alignParentBottom="true">
             <LinearLayout
@@ -74,23 +42,58 @@
                 android:background="?android:attr/selectableItemBackground"
                 >
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/hamburger_menu"
-                    android:layout_gravity="left"
-                    android:layout_marginStart="30dp"
+                    android:layout_gravity="center"
                     />
                 <TextView
+                    android:layout_marginTop="3dp"
                     android:text="LIST OF PLACES"
                     android:textSize="10sp"
                     android:fontFamily="sans-serif-black"
                     android:textColor="#262626"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="15dp"
+                    android:layout_gravity="center"
                     />
 
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/get_place"
+                android:orientation="vertical"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingBottom="7px"
+                android:background="?android:attr/selectableItemBackground"
+                >
+                <RelativeLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/button_bg"
+                    android:layout_gravity="center"
+                    >
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/search"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+                <TextView
+                    android:layout_marginTop="3dp"
+                    android:text="CHIBOG!"
+                    android:textSize="10sp"
+                    android:fontFamily="sans-serif-black"
+                    android:textColor="#262626"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/favorites"
@@ -104,24 +107,25 @@
                 android:background="?android:attr/selectableItemBackground"
                 >
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/favorite"
-                    android:layout_gravity="right"
-                    android:layout_marginEnd="30dp"
+                    android:layout_gravity="center"
                     />
                 <TextView
+                    android:layout_marginTop="3dp"
+
                     android:text="FAVORITES"
                     android:textSize="10sp"
                     android:fontFamily="sans-serif-black"
                     android:textColor="#262626"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginRight="26dp"
+                    android:layout_gravity="center"
                     />
-
             </LinearLayout>
+
         </LinearLayout>
     </RelativeLayout>
 
@@ -136,10 +140,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="List of Places"
-            android:textSize="18sp"
+            android:textSize="17sp"
             android:textStyle="bold"
-            android:gravity="center"
-            android:paddingLeft="10dp"/>
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:paddingTop="10dp"
+            />
         <ImageButton
             android:id="@+id/close_list"
             android:layout_width="wrap_content"
