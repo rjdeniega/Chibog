@@ -112,18 +112,17 @@
                     android:layout_height="32dp"
                     android:src="@drawable/favorite"
                     android:layout_gravity="center"
-                    />
+                    tools:ignore="ContentDescription" />
                 <TextView
                     android:layout_marginTop="3dp"
-
-                    android:text="FAVORITES"
+                    android:text="@string/favorites"
                     android:textSize="10sp"
                     android:fontFamily="sans-serif-black"
                     android:textColor="#262626"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    />
+                    tools:ignore="SmallSp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -139,7 +138,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="List of Places"
+            android:text="@string/places_header"
             android:textSize="17sp"
             android:textStyle="bold"
             android:layout_alignParentTop="true"
@@ -152,8 +151,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/ic_close_black_24dp"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"/>
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            tools:ignore="ContentDescription" />
         <LinearLayout
             android:layout_marginTop="10dp"
             android:id="@+id/top_line"
@@ -168,15 +168,69 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
-            android:text="No places have been loaded yet!"
+            android:text="@string/empty_places_error"
             android:textSize="13sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            tools:ignore="RelativeOverlap" />
 
         <android.support.v7.widget.RecyclerView
             android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/top_line"
-            android:id="@+id/rv_places"></android.support.v7.widget.RecyclerView>
+            android:id="@+id/rv_places" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/hidden_favourite"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:visibility="gone"
+        android:paddingTop="30dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/favourites_header"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:paddingTop="10dp"
+            />
+        <ImageButton
+            android:id="@+id/close_list_favourites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_close_black_24dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            tools:ignore="ContentDescription" />
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:id="@+id/top_line_favourites"
+            android:orientation="horizontal"
+            android:layout_below="@id/close_list_favourites"
+            android:layout_width="match_parent"
+            android:background="#212121"
+            android:layout_height="0dp"/>
+        <TextView
+            android:id="@+id/no_places_favourites"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:text="@string/empty_favourites_error"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            tools:ignore="RelativeOverlap" />
+
+        <android.support.v7.widget.RecyclerView
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/top_line_favourites"
+            android:id="@+id/rv_favourites" />
     </RelativeLayout>
 </RelativeLayout>

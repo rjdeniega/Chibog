@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Chibog</string>
+    <string name="empty_favourites_error">You have not added a location to your favourites!</string>
+    <string name="favourites_header">List of Favourites</string>
+    <string name="empty_places_error">No places have been loaded yet!</string>
+    <string name="places_header">List of Places</string>
+    <string name="favorites">FAVORITES</string>
 </resources>

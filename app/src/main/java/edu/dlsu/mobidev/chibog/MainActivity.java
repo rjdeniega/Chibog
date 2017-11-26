@@ -16,13 +16,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -31,14 +28,10 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -65,12 +58,13 @@ public class MainActivity extends AppCompatActivity implements
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-    RelativeLayout hiddenPanel, mainScreen;
-    LinearLayout pullUp;
-    ImageButton closeListOfPlaces;
+    RelativeLayout hiddenPanel, mainScreen, hiddenPanelFavourites;
+    LinearLayout pullUp, favouritesPullUp;
+    ImageButton closeListOfPlaces, closeListOfFavourites;
     RecyclerView rvPlaces;
     ArrayList<edu.dlsu.mobidev.chibog.Place> places;
     TextView noPlaces;
+    DatabaseHelper dbHelper;
 
     View get_place;
     int PROXIMITY_RADIUS = 500;
@@ -94,8 +88,10 @@ public class MainActivity extends AppCompatActivity implements
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         get_place = findViewById(R.id.get_place);
 
+        dbHelper = new DatabaseHelper(getBaseContext());
         noPlaces = (TextView) findViewById(R.id.no_places);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
+        hiddenPanelFavourites = (RelativeLayout) findViewById(R.id.hidden_favourite);
         mainScreen = (RelativeLayout) findViewById(R.id.main_screen);
         rvPlaces = (RecyclerView) findViewById(R.id.rv_places);
         places = new ArrayList<>();
@@ -135,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements
 
         pullUp = (LinearLayout) findViewById(R.id.pull_up);
         closeListOfPlaces = (ImageButton) findViewById(R.id.close_list);
+        closeListOfFavourites = (ImageButton) findViewById(R.id.close_list_favourites);
+        favouritesPullUp = (LinearLayout) findViewById(R.id.favorites);
 
         // Closes the list of places
         closeListOfPlaces.setOnClickListener(new View.OnClickListener() {
@@ -163,6 +161,34 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        // Closes the list of favourite places
+        closeListOfFavourites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animation bottomDown = AnimationUtils.loadAnimation(getBaseContext(),
+                        R.anim.bottom_down);
+                hiddenPanelFavourites.startAnimation(bottomDown);
+
+                bottomDown.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        mainScreen.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        hiddenPanelFavourites.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+            }
+        });
+
+
         // Opens the list of places loaded
         pullUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,6 +197,34 @@ public class MainActivity extends AppCompatActivity implements
                         R.anim.bottom_up);
                 hiddenPanel.startAnimation(bottomUp);
                 hiddenPanel.setVisibility(View.VISIBLE);
+
+                bottomUp.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mainScreen.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+            }
+        });
+
+        // Opens the list of favourite places
+        favouritesPullUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animation bottomUp = AnimationUtils.loadAnimation(getBaseContext(),
+                        R.anim.bottom_up);
+                hiddenPanelFavourites.startAnimation(bottomUp);
+                hiddenPanelFavourites.setVisibility(View.VISIBLE);
 
                 bottomUp.setAnimationListener(new Animation.AnimationListener() {
                     @Override
