@@ -1,8 +1,13 @@
 package edu.dlsu.mobidev.chibog;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * Created by Ira on 26/11/2017.
@@ -10,7 +15,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SCHEMA = "places";
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     // Table Names
     private static final String TABLE_PLACE = "places";
@@ -28,7 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String RESTAURANT_NAME = "name";
     private static final String RESTAURANT_LOCATION = "location";
     private static final String RESTAURANT_LATITUDE = "lat";
-    private static final String RESTAURANT_LONGTITUDE = "lng";
+    private static final String RESTAURANT_LONGITUDE = "lng";
 
     // Table Create Statements
     // Places Table
@@ -41,7 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                         + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                                         + PLACE_ID + " INTEGER, " + RESTAURANT_NAME + " TEXT, "
                                         + RESTAURANT_LOCATION + " TEXT, " + RESTAURANT_LATITUDE
-                                        + " REAL, " + RESTAURANT_LONGTITUDE + " REAL);";
+                                        + " REAL, " + RESTAURANT_LONGITUDE + " REAL);";
 
     public DatabaseHelper(Context context) {
         super(context, SCHEMA, null, VERSION);
@@ -52,11 +57,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(CREATE_TABLE_PLACES);
         sqLiteDatabase.execSQL(CREATE_TABLE_RESTAURANT);
     }
+
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_RESTAURANT);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_PLACE);
 
         onCreate(sqLiteDatabase);
+    }
+
+    void addLocation(String name, ArrayList<Place> restaurants){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cvPlace = new ContentValues();
+        cvPlace.put(PLACE_NAME, name);
+        long id = db.insert(TABLE_PLACE, null, cvPlace);
+
+        for (Place restaurant: restaurants) {
+            ContentValues cvRestaurant = new ContentValues();
+            cvRestaurant.put(PLACE_ID, id);
+            cvRestaurant.put(RESTAURANT_NAME, restaurant.getName());
+            cvRestaurant.put(RESTAURANT_LOCATION, restaurant.getLocation());
+            cvRestaurant.put(RESTAURANT_LATITUDE, restaurant.getLat());
+            cvRestaurant.put(RESTAURANT_LONGITUDE, restaurant.getLng());
+            db.insert(TABLE_RESTAURANT, null, cvRestaurant);
+        }
+    }
+
+    Cursor getAllFavourites(){
+        SQLiteDatabase db = getReadableDatabase();
+        return db.query(TABLE_PLACE, null, null, null, null, null,
+                PLACE_NAME + " ASC");
+    }
+
+    ArrayList<Place> getRestaurantsFromFavourite(String name){
+        SQLiteDatabase db = getReadableDatabase();
+        String id = null;
+        Cursor place = db.query(TABLE_PLACE, null, PLACE_NAME + " = ? ",
+                            new String[]{name}, null, null, null);
+        if (place.moveToFirst()){
+            id = place.getString(place.getColumnIndex(KEY_ID));
+            place.close();
+        }
+        Cursor result = db.query(TABLE_RESTAURANT, null, PLACE_ID + " = ? ",
+                            new String[]{id}, null, null ,null);
+
+        ArrayList<Place> places = new ArrayList<>();
+        if (result.moveToFirst()){
+            while(!result.isAfterLast()){
+                Place init = new Place();
+                init.setName(result.getString(result.getColumnIndex(RESTAURANT_NAME)));
+                init.setLocation(result.getString(result.getColumnIndex(RESTAURANT_LOCATION)));
+                init.setLat(result.getDouble(result.getColumnIndex(RESTAURANT_LATITUDE)));
+                init.setLng(result.getDouble(result.getColumnIndex(RESTAURANT_LONGITUDE)));
+                places.add(init);
+                result.moveToNext();
+            }
+        }
+        result.close();
+        return places;
     }
 }

@@ -2,7 +2,11 @@ package edu.dlsu.mobidev.chibog;
 
 import android.*;
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -14,12 +18,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -52,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    FavouriteAdapter favouriteAdapter;
     GoogleMap mGoogleMap;
     SupportMapFragment mapFragment;
     LocationRequest mLocationRequest;
@@ -60,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements
     Marker mCurrLocationMarker;
     RelativeLayout hiddenPanel, mainScreen, hiddenPanelFavourites;
     LinearLayout pullUp, favouritesPullUp;
-    ImageButton closeListOfPlaces, closeListOfFavourites;
-    RecyclerView rvPlaces;
+    ImageButton closeListOfPlaces, closeListOfFavourites, addToFavourites;
+    RecyclerView rvPlaces, rvFavourites;
     ArrayList<edu.dlsu.mobidev.chibog.Place> places;
     TextView noPlaces;
     DatabaseHelper dbHelper;
@@ -92,9 +99,26 @@ public class MainActivity extends AppCompatActivity implements
         noPlaces = (TextView) findViewById(R.id.no_places);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
         hiddenPanelFavourites = (RelativeLayout) findViewById(R.id.hidden_favourite);
+        addToFavourites = (ImageButton) findViewById(R.id.add_favourite);
         mainScreen = (RelativeLayout) findViewById(R.id.main_screen);
         rvPlaces = (RecyclerView) findViewById(R.id.rv_places);
+        rvFavourites = (RecyclerView) findViewById(R.id.rv_favourites);
+        rvFavourites.setLayoutManager(new LinearLayoutManager(this));
+        favouriteAdapter = new FavouriteAdapter(this, dbHelper.getAllFavourites());
+        rvFavourites.setAdapter(favouriteAdapter);
         places = new ArrayList<>();
+        favouriteAdapter.setOnItemClickListener(new FavouriteAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String name) {
+                ArrayList<Place> newList =  dbHelper.getRestaurantsFromFavourite(name);
+                StringBuilder boi = new StringBuilder();
+                for (Place p:newList){
+                    boi.append(p.getName());
+                }
+                Log.i("PLACES", newList.toString());
+                Toast.makeText(getBaseContext(), boi.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Testing get nearby restaurants
         get_place.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements
                 rvPlaces.setVisibility(View.VISIBLE);
                 noPlaces.setVisibility(View.GONE);
                 PlaceAdapter pa = new PlaceAdapter(places);
+                addToFavourites.setVisibility(View.VISIBLE);
                 pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
@@ -133,6 +158,37 @@ public class MainActivity extends AppCompatActivity implements
         closeListOfPlaces = (ImageButton) findViewById(R.id.close_list);
         closeListOfFavourites = (ImageButton) findViewById(R.id.close_list_favourites);
         favouritesPullUp = (LinearLayout) findViewById(R.id.favorites);
+
+        addToFavourites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                final EditText input = new EditText(MainActivity.this);
+                builder.setTitle("Input name for this list");
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+                builder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String favouriteName = input.getText().toString();
+                        Log.i("ADDED LIST", places.toString());
+                        dbHelper.addLocation(favouriteName, places);
+                        Toast.makeText(MainActivity.this, favouriteName
+                                + " was added to favourites!", Toast.LENGTH_LONG).show();
+                        favouriteAdapter.swapCursor(dbHelper.getAllFavourites());
+                    }
+                });
+
+                builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
 
         // Closes the list of places
         closeListOfPlaces.setOnClickListener(new View.OnClickListener() {
