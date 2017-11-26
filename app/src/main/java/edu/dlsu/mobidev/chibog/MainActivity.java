@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    PlaceAdapter pa;
     FavouriteAdapter favouriteAdapter;
     GoogleMap mGoogleMap;
     SupportMapFragment mapFragment;
@@ -107,16 +108,50 @@ public class MainActivity extends AppCompatActivity implements
         favouriteAdapter = new FavouriteAdapter(this, dbHelper.getAllFavourites());
         rvFavourites.setAdapter(favouriteAdapter);
         places = new ArrayList<>();
+
         favouriteAdapter.setOnItemClickListener(new FavouriteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String name) {
                 ArrayList<Place> newList =  dbHelper.getRestaurantsFromFavourite(name);
-                StringBuilder boi = new StringBuilder();
-                for (Place p:newList){
-                    boi.append(p.getName());
+                mGoogleMap.clear();
+                for (Place p: newList){
+                    MarkerOptions markerOptions = new MarkerOptions();
+
+                    String placeName = p.getName();
+                    String vicinity = p.getVicinity();
+                    double lat = p.getLat();
+                    double lng = p.getLng();
+
+                    LatLng latLng = new LatLng( lat, lng);
+                    markerOptions.position(latLng);
+                    markerOptions.title(placeName + " : "+ vicinity);
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.mini_chibog));
+
+                    // TODO figure out how to place an image from a URL. There's a ImageView na sa RecyclerView
+
+                    Place place = new Place(placeName, vicinity,
+                            p.getImageUrl(), lat, lng);
+                    places.add(place);
+                    mGoogleMap.addMarker(markerOptions);
+                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
                 }
-                Log.i("PLACES", newList.toString());
-                Toast.makeText(getBaseContext(), boi.toString(), Toast.LENGTH_SHORT).show();
+                closeFavourites();
+                addToFavourites.setVisibility(View.GONE);
+                rvPlaces.setVisibility(View.VISIBLE);
+                noPlaces.setVisibility(View.GONE);
+                pa = new PlaceAdapter(newList);
+                pa.notifyDataSetChanged();
+                pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
+                        Toast.makeText(getBaseContext(), "User clicked on " + p.getName(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+                rvPlaces.setAdapter(pa);
+                rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
+                        LinearLayoutManager.VERTICAL, false));
+                Toast.makeText(getBaseContext(), name + " was loaded", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -138,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements
                 Toast.makeText(MainActivity.this, "Showing Nearby Restaurants", Toast.LENGTH_SHORT).show();
                 rvPlaces.setVisibility(View.VISIBLE);
                 noPlaces.setVisibility(View.GONE);
-                PlaceAdapter pa = new PlaceAdapter(places);
+                pa = new PlaceAdapter(places);
                 addToFavourites.setVisibility(View.VISIBLE);
                 pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
                     @Override
@@ -217,30 +252,12 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+
         // Closes the list of favourite places
         closeListOfFavourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Animation bottomDown = AnimationUtils.loadAnimation(getBaseContext(),
-                        R.anim.bottom_down);
-                hiddenPanelFavourites.startAnimation(bottomDown);
-
-                bottomDown.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        mainScreen.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        hiddenPanelFavourites.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
+                closeFavourites();
             }
         });
 
@@ -298,6 +315,29 @@ public class MainActivity extends AppCompatActivity implements
 
                     }
                 });
+            }
+        });
+    }
+
+    private void closeFavourites(){
+        Animation bottomDown = AnimationUtils.loadAnimation(getBaseContext(),
+                R.anim.bottom_down);
+        hiddenPanelFavourites.startAnimation(bottomDown);
+
+        bottomDown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                mainScreen.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                hiddenPanelFavourites.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
             }
         });
     }

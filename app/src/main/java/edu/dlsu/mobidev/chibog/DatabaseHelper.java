@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SCHEMA = "places";
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
 
     // Table Names
     private static final String TABLE_PLACE = "places";
@@ -34,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String RESTAURANT_LOCATION = "location";
     private static final String RESTAURANT_LATITUDE = "lat";
     private static final String RESTAURANT_LONGITUDE = "lng";
+    private static final String RESTAURANT_VICINITY = "vicinity";
 
     // Table Create Statements
     // Places Table
@@ -46,9 +47,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                         + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                                         + PLACE_ID + " INTEGER, " + RESTAURANT_NAME + " TEXT, "
                                         + RESTAURANT_LOCATION + " TEXT, " + RESTAURANT_LATITUDE
-                                        + " REAL, " + RESTAURANT_LONGITUDE + " REAL);";
+                                        + " REAL, " + RESTAURANT_LONGITUDE + " REAL, "
+                                        + RESTAURANT_VICINITY + " TEXT, " + KEY_CREATED_AT
+                                        + " DATETIME);";
 
-    public DatabaseHelper(Context context) {
+    DatabaseHelper(Context context) {
         super(context, SCHEMA, null, VERSION);
     }
 
@@ -79,6 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cvRestaurant.put(RESTAURANT_LOCATION, restaurant.getLocation());
             cvRestaurant.put(RESTAURANT_LATITUDE, restaurant.getLat());
             cvRestaurant.put(RESTAURANT_LONGITUDE, restaurant.getLng());
+            cvRestaurant.put(RESTAURANT_VICINITY, restaurant.getVicinity());
             db.insert(TABLE_RESTAURANT, null, cvRestaurant);
         }
     }
@@ -107,6 +111,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Place init = new Place();
                 init.setName(result.getString(result.getColumnIndex(RESTAURANT_NAME)));
                 init.setLocation(result.getString(result.getColumnIndex(RESTAURANT_LOCATION)));
+                init.setVicinity(result.getString(result.getColumnIndex(RESTAURANT_VICINITY)));
                 init.setLat(result.getDouble(result.getColumnIndex(RESTAURANT_LATITUDE)));
                 init.setLng(result.getDouble(result.getColumnIndex(RESTAURANT_LONGITUDE)));
                 places.add(init);
