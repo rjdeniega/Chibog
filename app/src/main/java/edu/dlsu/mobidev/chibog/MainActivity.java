@@ -126,14 +126,10 @@ public class MainActivity extends AppCompatActivity implements
                     markerOptions.position(latLng);
                     markerOptions.title(placeName + " : "+ vicinity);
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.mini_chibog));
-
                     // TODO figure out how to place an image from a URL. There's a ImageView na sa RecyclerView
-
-                    Place place = new Place(placeName, vicinity,
-                            p.getImageUrl(), lat, lng);
-                    places.add(place);
                     mGoogleMap.addMarker(markerOptions);
-                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
                 closeFavourites();
                 addToFavourites.setVisibility(View.GONE);

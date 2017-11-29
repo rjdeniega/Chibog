@@ -72,6 +72,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             places.add(place);
             gMap.addMarker(markerOptions);
             gMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+            gMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         }
     }
 
