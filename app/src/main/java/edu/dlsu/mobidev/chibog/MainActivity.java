@@ -228,6 +228,9 @@ public class MainActivity extends AppCompatActivity implements
                         Toast.makeText(MainActivity.this, favouriteName
                                 + " was added to favourites!", Toast.LENGTH_LONG).show();
                         favouriteAdapter.swapCursor(dbHelper.getAllFavourites());
+                        if(dbHelper.getAllFavourites().getCount() > 0){
+                            noFavourites.setVisibility(View.GONE);
+                        }
                     }
                 });
 
