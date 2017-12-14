@@ -2,15 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/everything"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/everything"
     tools:context="edu.dlsu.mobidev.chibog.MainActivity">
+
     <RelativeLayout
         android:id="@+id/main_screen"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/map"
@@ -19,113 +21,125 @@
             android:layout_height="match_parent"
             tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
-
-
-
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="-5dp"
+            >
+        <ImageView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:alpha="0.8"
+            android:background="#444" />
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:background="#ffffff"
-            android:elevation="40dp"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginBottom="-5dp"
-            android:layout_alignParentBottom="true">
+            android:elevation="40dp">
+
             <LinearLayout
                 android:id="@+id/pull_up"
-                android:text="List of Places"
-                android:orientation="vertical"
-                android:layout_height="match_parent"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
+                android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
+                android:orientation="vertical"
                 android:paddingBottom="7px"
-                android:background="?android:attr/selectableItemBackground"
-                >
+                android:text="List of Places">
+
                 <ImageView
-                    android:layout_marginTop="5dp"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/hamburger_menu"
                     android:layout_gravity="center"
+                    android:layout_marginTop="13dp"
+                    android:src="@drawable/ic_list_black_24dp"
                     />
+
                 <TextView
-                    android:layout_marginTop="3dp"
-                    android:text="LIST OF PLACES"
-                    android:textSize="10sp"
-                    android:fontFamily="sans-serif-black"
-                    android:textColor="#262626"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    />
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="LIST OF PLACES"
+                    android:textColor="#fff"
+                    android:textSize="10sp" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/get_place"
-                android:orientation="vertical"
-                android:layout_height="match_parent"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
+                android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                android:paddingBottom="7px"
-                android:background="?android:attr/selectableItemBackground"
-                >
+                android:orientation="vertical"
+                android:paddingBottom="7px">
+
                 <RelativeLayout
-                    android:layout_marginTop="5dp"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:background="@drawable/button_bg"
                     android:layout_gravity="center"
-                    >
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/button_bg">
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/search"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/search" />
                 </RelativeLayout>
+
                 <TextView
-                    android:layout_marginTop="3dp"
-                    android:text="CHIBOG!"
-                    android:textSize="10sp"
-                    android:fontFamily="sans-serif-black"
-                    android:textColor="#262626"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    />
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="CHIBOG!"
+                    android:textColor="#fff"
+                    android:textSize="10sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/favorites"
-                android:orientation="vertical"
-                android:layout_height="match_parent"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="0.5"
+                android:background="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                android:paddingBottom="7px"
-                android:background="?android:attr/selectableItemBackground"
-                >
+                android:orientation="vertical"
+                android:paddingBottom="7px">
+
                 <ImageView
-                    android:layout_marginTop="5dp"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/favorite"
                     android:layout_gravity="center"
+                    android:layout_marginTop="13dp"
+                    android:src="@drawable/ic_star_border_black_24dp"
                     tools:ignore="ContentDescription" />
+
                 <TextView
-                    android:layout_marginTop="3dp"
-                    android:text="@string/favorites"
-                    android:textSize="10sp"
-                    android:fontFamily="sans-serif-black"
-                    android:textColor="#262626"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="@string/favorites"
+                    android:textColor="#fff"
+                    android:textSize="10sp"
                     tools:ignore="SmallSp" />
             </LinearLayout>
 
         </LinearLayout>
+        </FrameLayout>
     </RelativeLayout>
 
     <RelativeLayout
@@ -133,44 +147,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
-        android:visibility="gone"
-        android:paddingTop="30dp">
+        android:paddingTop="30dp"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/places_header"
-            android:textSize="17sp"
-            android:textStyle="bold"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
-            android:paddingTop="10dp"/>
+            android:paddingTop="10dp"
+            android:text="@string/places_header"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
         <ImageButton
             android:id="@+id/add_favourite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_star_black_24dp"
-            android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:layout_marginStart="10dp"
-            tools:ignore="ContentDescription"
-            android:visibility="gone"/>
+            android:background="@drawable/ic_star_black_24dp"
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
+
         <ImageButton
             android:id="@+id/close_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_close_black_24dp"
-            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
             android:layout_marginEnd="10dp"
+            android:background="@drawable/ic_close_black_24dp"
             tools:ignore="ContentDescription" />
+
         <LinearLayout
-            android:layout_marginTop="10dp"
             android:id="@+id/top_line"
-            android:orientation="horizontal"
-            android:layout_below="@id/close_list"
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@id/close_list"
+            android:layout_marginTop="10dp"
             android:background="#212121"
-            android:layout_height="0dp"/>
+            android:orientation="horizontal" />
+
         <TextView
             android:id="@+id/no_places"
             android:layout_width="wrap_content"
@@ -183,11 +202,11 @@
             tools:ignore="RelativeOverlap" />
 
         <android.support.v7.widget.RecyclerView
-            android:visibility="invisible"
+            android:id="@+id/rv_places"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/top_line"
-            android:id="@+id/rv_places" />
+            android:visibility="invisible" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -195,35 +214,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
-        android:visibility="gone"
-        android:paddingTop="30dp">
+        android:paddingTop="30dp"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/favourites_header"
-            android:textSize="17sp"
-            android:textStyle="bold"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:paddingTop="10dp"
-            />
+            android:text="@string/favourites_header"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
         <ImageButton
             android:id="@+id/close_list_favourites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_close_black_24dp"
-            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
             android:layout_marginEnd="10dp"
+            android:background="@drawable/ic_close_black_24dp"
             tools:ignore="ContentDescription" />
+
         <LinearLayout
-            android:layout_marginTop="10dp"
             android:id="@+id/top_line_favourites"
-            android:orientation="horizontal"
-            android:layout_below="@id/close_list_favourites"
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@id/close_list_favourites"
+            android:layout_marginTop="10dp"
             android:background="#212121"
-            android:layout_height="0dp"/>
+            android:orientation="horizontal" />
+
         <TextView
             android:id="@+id/no_places_favourites"
             android:layout_width="wrap_content"
@@ -236,9 +258,9 @@
             tools:ignore="RelativeOverlap" />
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_favourites"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/top_line_favourites"
-            android:id="@+id/rv_favourites" />
+            android:layout_below="@id/top_line_favourites" />
     </RelativeLayout>
 </RelativeLayout>
