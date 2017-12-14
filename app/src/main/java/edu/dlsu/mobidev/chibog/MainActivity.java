@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -48,8 +49,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static edu.dlsu.mobidev.chibog.R.id.map;
+import static edu.dlsu.mobidev.chibog.R.id.randomize;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -67,11 +70,11 @@ public class MainActivity extends AppCompatActivity implements
     Location mLastLocation;
     Marker mCurrLocationMarker;
     RelativeLayout hiddenPanel, mainScreen, hiddenPanelFavourites;
-    LinearLayout pullUp, favouritesPullUp;
+    LinearLayout pullUp, favouritesPullUp, random;
     ImageButton closeListOfPlaces, closeListOfFavourites, addToFavourites;
     RecyclerView rvPlaces, rvFavourites;
     ArrayList<edu.dlsu.mobidev.chibog.Place> places;
-    TextView noPlaces;
+    TextView noPlaces, noFavourites;
     DatabaseHelper dbHelper;
 
     View get_place;
@@ -97,7 +100,9 @@ public class MainActivity extends AppCompatActivity implements
         get_place = findViewById(R.id.get_place);
 
         dbHelper = new DatabaseHelper(getBaseContext());
+        random = (LinearLayout) findViewById(R.id.randomize);
         noPlaces = (TextView) findViewById(R.id.no_places);
+        noFavourites = (TextView)findViewById(R.id.no_places_favourites);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
         hiddenPanelFavourites = (RelativeLayout) findViewById(R.id.hidden_favourite);
         addToFavourites = (ImageButton) findViewById(R.id.add_favourite);
@@ -107,12 +112,61 @@ public class MainActivity extends AppCompatActivity implements
         rvFavourites.setLayoutManager(new LinearLayoutManager(this));
         favouriteAdapter = new FavouriteAdapter(this, dbHelper.getAllFavourites());
         rvFavourites.setAdapter(favouriteAdapter);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                removeItem((long) viewHolder.itemView.getTag());
+            }
+        }).attachToRecyclerView(rvFavourites);
+
+        if(dbHelper.getAllFavourites().getCount() > 0){
+            noFavourites.setVisibility(View.GONE);
+        }
+        Log.i("fav", dbHelper.getAllFavourites().getCount() + "");
+
         places = new ArrayList<>();
+
+        random.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (places.isEmpty()){
+                    Toast.makeText(getBaseContext(), "Can't randomize what's not there!",
+                            Toast.LENGTH_SHORT).show();
+                }else{
+                    mGoogleMap.clear();
+
+                    int randomNum = ThreadLocalRandom.current().nextInt(0,
+                            places.size());
+                    Place p = places.get(randomNum);
+                    MarkerOptions markerOptions = new MarkerOptions();
+
+                    String placeName = p.getName();
+                    String vicinity = p.getVicinity();
+                    double lat = p.getLat();
+                    double lng = p.getLng();
+
+                    LatLng latLng = new LatLng( lat, lng);
+                    markerOptions.position(latLng);
+                    markerOptions.title(placeName + " : "+ vicinity);
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.chibog_mini));
+                    mGoogleMap.addMarker(markerOptions);
+                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                }
+
+            }
+        });
 
         favouriteAdapter.setOnItemClickListener(new FavouriteAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(String name) {
-                ArrayList<Place> newList =  dbHelper.getRestaurantsFromFavourite(name);
+            public void onItemClick(long id) {
+                ArrayList<Place> newList =  dbHelper.getRestaurantsFromFavourite(id);
                 mGoogleMap.clear();
                 for (Place p: newList){
                     MarkerOptions markerOptions = new MarkerOptions();
@@ -125,8 +179,7 @@ public class MainActivity extends AppCompatActivity implements
                     LatLng latLng = new LatLng( lat, lng);
                     markerOptions.position(latLng);
                     markerOptions.title(placeName + " : "+ vicinity);
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
-                    // TODO figure out how to place an image from a URL. There's a ImageView na sa RecyclerView
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.chibog_mini));
                     mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -147,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements
                 rvPlaces.setAdapter(pa);
                 rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
                         LinearLayoutManager.VERTICAL, false));
-                Toast.makeText(getBaseContext(), name + " was loaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), id + " was loaded", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -207,6 +260,9 @@ public class MainActivity extends AppCompatActivity implements
                         Toast.makeText(MainActivity.this, favouriteName
                                 + " was added to favourites!", Toast.LENGTH_LONG).show();
                         favouriteAdapter.swapCursor(dbHelper.getAllFavourites());
+                        if(dbHelper.getAllFavourites().getCount() > 0){
+                            noFavourites.setVisibility(View.GONE);
+                        }
                     }
                 });
 
@@ -517,6 +573,14 @@ public class MainActivity extends AppCompatActivity implements
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
 
+    }
+
+    private void removeItem(long id){
+        dbHelper.deleteData(id);
+        favouriteAdapter.swapCursor(dbHelper.getAllFavourites());
+        if(dbHelper.getAllFavourites().getCount() == 0){
+            noFavourites.setVisibility(View.VISIBLE);
+        }
     }
 
 }
