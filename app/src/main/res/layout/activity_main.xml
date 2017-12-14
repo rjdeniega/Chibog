@@ -2,11 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/everything"
+    android:id="@+id/relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="edu.dlsu.mobidev.chibog.MainActivity">
+
 
     <RelativeLayout
         android:id="@+id/main_screen"
@@ -21,140 +22,154 @@
             android:layout_height="match_parent"
             tools:context="com.example.mapwithmarker.MapsMarkerActivity" />
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/get_place"
-                android:layout_height="90dp"
-                android:layout_width="90dp"
-                android:layout_gravity="bottom"
-                android:layout_margin="17dp"
-                android:src="@drawable/search_pink"
-                android:clickable="true"
-                app:borderWidth="0dp"
-                android:layout_alignParentRight="true"
-                android:layout_above="@+id/nav_bar"
-                />
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/undo_button"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_above="@+id/get_place"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="10dp"
+            android:clickable="true"
+            android:src="@drawable/undo_icon"
+            android:theme="@style/AppTheme.White"
+            app:borderWidth="0dp"
+            app:fabSize="mini" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/get_place"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_above="@+id/nav_bar"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="bottom"
+            android:layout_margin="20dp"
+            android:clickable="true"
+            android:src="@drawable/search_pink"
+            android:theme="@style/AppTheme.White"
+            app:borderWidth="0dp" />
 
         <FrameLayout
             android:id="@+id/nav_bar"
             android:layout_width="fill_parent"
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="-5dp"
-            >
-        <ImageView
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:alpha="0.8"
-            android:background="#fff" />
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="70dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="-5dp"
-            android:elevation="40dp">
+            android:layout_marginBottom="-5dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.9"
+                android:background="#fff" />
 
             <LinearLayout
-                android:id="@+id/pull_up"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical"
-                android:paddingBottom="7px"
-                android:text="List of Places">
+                android:layout_width="fill_parent"
+                android:layout_height="70dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="-5dp"
+                android:elevation="40dp">
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:scaleType="fitCenter"
-                    android:layout_marginTop="5dp"
-                    android:src="@drawable/order"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="3dp"
-                    android:fontFamily="sans-serif-black"
-                    android:text="LIST OF PLACES"
-                    android:textColor="#1e1e1e"
-                    android:textSize="10sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/randomize"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical"
-                android:paddingBottom="7px">
-
-                <RelativeLayout
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/button_bg">
+                <LinearLayout
+                    android:id="@+id/pull_up"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:paddingBottom="7px"
+                    android:text="List of Places">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_centerInParent="true"
-                        android:src="@drawable/chibog_logo_white" />
-                </RelativeLayout>
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/order" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="2dp"
-                    android:fontFamily="sans-serif-black"
-                    android:text="CHIBOG!"
-                    android:textColor="#1e1e1e"
-                    android:textSize="10sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="3dp"
+                        android:fontFamily="sans-serif-black"
+                        android:text="LIST OF PLACES"
+                        android:textColor="#1e1e1e"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/randomize"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:paddingBottom="7px">
+
+                    <RelativeLayout
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/button_bg">
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/chibog_logo_white" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="sans-serif-black"
+                        android:text="CHIBOG!"
+                        android:textColor="#1e1e1e"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/favorites"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
+                    android:paddingBottom="7px">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/star"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="3dp"
+                        android:fontFamily="sans-serif-black"
+                        android:text="@string/favorites"
+                        android:textColor="#1e1e1e"
+                        android:textSize="10sp"
+                        tools:ignore="SmallSp" />
+                </LinearLayout>
+
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/favorites"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:orientation="vertical"
-                android:paddingBottom="7px">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:scaleType="fitCenter"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
-                    android:src="@drawable/star"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="3dp"
-                    android:fontFamily="sans-serif-black"
-                    android:text="@string/favorites"
-                    android:textColor="#1e1e1e"
-                    android:textSize="10sp"
-                    tools:ignore="SmallSp" />
-            </LinearLayout>
-
-        </LinearLayout>
         </FrameLayout>
     </RelativeLayout>
 
@@ -175,17 +190,30 @@
             android:text="@string/places_header"
             android:textSize="17sp"
             android:textStyle="bold" />
-
-        <ImageButton
-            android:id="@+id/add_favourite"
+        <RelativeLayout
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="15dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
+            android:layout_height="wrap_content">
+        <ImageButton
+            android:layout_centerInParent="true"
+            android:id="@+id/add_favourite"
+            android:layout_width="90dp"
+            android:layout_height="30dp"
             android:layout_marginStart="10dp"
-            android:background="@drawable/ic_star_black_24dp"
+            android:background="@drawable/test_shape"
             android:visibility="gone"
             tools:ignore="ContentDescription" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dp"
+                android:textSize="10dp"
+                android:textColor="#ff6c6c"
+                android:fontFamily="sans-serif-black"
+                android:text="Add to Favorites"/>
+        </RelativeLayout>
 
         <ImageButton
             android:id="@+id/close_list"
@@ -224,6 +252,7 @@
             android:layout_below="@id/top_line"
             android:visibility="invisible" />
     </RelativeLayout>
+
 
     <RelativeLayout
         android:id="@+id/hidden_favourite"

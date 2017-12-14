@@ -6,21 +6,31 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -30,8 +40,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -76,6 +88,12 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<edu.dlsu.mobidev.chibog.Place> places;
     TextView noPlaces, noFavourites;
     DatabaseHelper dbHelper;
+    public static int TYPE_WIFI = 1;
+    public static int TYPE_MOBILE = 2;
+    public static int TYPE_NOT_CONNECTED = 0;
+    private Snackbar snackbar;
+    private RelativeLayout relativeLayout;
+    private boolean internetConnected = true;
 
     View get_place;
     int PROXIMITY_RADIUS = 500;
@@ -93,6 +111,9 @@ public class MainActivity extends AppCompatActivity implements
         // This adds a map to the layout
         if (isServicesOK()) initializeMap();
         requestPermission();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        relativeLayout = (RelativeLayout) findViewById(R.id.relative_layout);
 
         //set-up transparent status bar\
         Window w = getWindow();
@@ -102,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements
         dbHelper = new DatabaseHelper(getBaseContext());
         random = (LinearLayout) findViewById(R.id.randomize);
         noPlaces = (TextView) findViewById(R.id.no_places);
-        noFavourites = (TextView)findViewById(R.id.no_places_favourites);
+        noFavourites = (TextView) findViewById(R.id.no_places_favourites);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
         hiddenPanelFavourites = (RelativeLayout) findViewById(R.id.hidden_favourite);
         addToFavourites = (ImageButton) findViewById(R.id.add_favourite);
@@ -125,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }).attachToRecyclerView(rvFavourites);
 
-        if(dbHelper.getAllFavourites().getCount() > 0){
+        if (dbHelper.getAllFavourites().getCount() > 0) {
             noFavourites.setVisibility(View.GONE);
         }
         Log.i("fav", dbHelper.getAllFavourites().getCount() + "");
@@ -135,10 +156,10 @@ public class MainActivity extends AppCompatActivity implements
         random.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (places.isEmpty()){
+                if (places.isEmpty()) {
                     Toast.makeText(getBaseContext(), "Can't randomize what's not there!",
                             Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     mGoogleMap.clear();
 
                     int randomNum = ThreadLocalRandom.current().nextInt(0,
@@ -151,9 +172,9 @@ public class MainActivity extends AppCompatActivity implements
                     double lat = p.getLat();
                     double lng = p.getLng();
 
-                    LatLng latLng = new LatLng( lat, lng);
+                    LatLng latLng = new LatLng(lat, lng);
                     markerOptions.position(latLng);
-                    markerOptions.title(placeName + " : "+ vicinity);
+                    markerOptions.title(placeName + " : " + vicinity);
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.chibog_mini));
                     mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
@@ -166,9 +187,9 @@ public class MainActivity extends AppCompatActivity implements
         favouriteAdapter.setOnItemClickListener(new FavouriteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(long id) {
-                ArrayList<Place> newList =  dbHelper.getRestaurantsFromFavourite(id);
+                ArrayList<Place> newList = dbHelper.getRestaurantsFromFavourite(id);
                 mGoogleMap.clear();
-                for (Place p: newList){
+                for (Place p : newList) {
                     MarkerOptions markerOptions = new MarkerOptions();
 
                     String placeName = p.getName();
@@ -176,9 +197,9 @@ public class MainActivity extends AppCompatActivity implements
                     double lat = p.getLat();
                     double lng = p.getLng();
 
-                    LatLng latLng = new LatLng( lat, lng);
+                    LatLng latLng = new LatLng(lat, lng);
                     markerOptions.position(latLng);
-                    markerOptions.title(placeName + " : "+ vicinity);
+                    markerOptions.title(placeName + " : " + vicinity);
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.chibog_mini));
                     mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
@@ -208,32 +229,43 @@ public class MainActivity extends AppCompatActivity implements
         get_place.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                places.clear();
-                Object dataTransfer[] = new Object[3];
-                GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                mGoogleMap.clear();
-                String url = getUrl(latitude, longitude, "restaurant");
-                dataTransfer[0] = mGoogleMap;
-                dataTransfer[1] = url;
-                dataTransfer[2] = places;
+                String status = getConnectivityStatusString(getBaseContext());
+                if (!status.equalsIgnoreCase("Not connected to Internet")){
+                    places.clear();
+                    Object dataTransfer[] = new Object[3];
+                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                    mGoogleMap.clear();
+                    String url = getUrl(latitude, longitude, "restaurant");
+                    dataTransfer[0] = mGoogleMap;
+                    dataTransfer[1] = url;
+                    dataTransfer[2] = places;
 
-                getNearbyPlacesData.execute(dataTransfer);
+                    getNearbyPlacesData.execute(dataTransfer);
 
-                Toast.makeText(MainActivity.this, "Showing Nearby Restaurants", Toast.LENGTH_SHORT).show();
-                rvPlaces.setVisibility(View.VISIBLE);
-                noPlaces.setVisibility(View.GONE);
-                pa = new PlaceAdapter(places);
-                addToFavourites.setVisibility(View.VISIBLE);
-                pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
-                        Toast.makeText(getBaseContext(), "User clicked on " + p.getName(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-                rvPlaces.setAdapter(pa);
-                rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
-                                            LinearLayoutManager.VERTICAL, false));
+                    Toast.makeText(MainActivity.this, "Showing Nearby Restaurants", Toast.LENGTH_SHORT).show();
+                    rvPlaces.setVisibility(View.VISIBLE);
+                    noPlaces.setVisibility(View.GONE);
+                    pa = new PlaceAdapter(places);
+                    addToFavourites.setVisibility(View.VISIBLE);
+                    pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
+                            Toast.makeText(getBaseContext(), "User clicked on " + p.getName(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    rvPlaces.setAdapter(pa);
+                    rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
+                            LinearLayoutManager.VERTICAL, false));
+                }else{
+                    View view2 = snackbar.getView();
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                            LayoutParams.WRAP_CONTENT);
+                    params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                    view2.setLayoutParams(params);
+                    internetConnected = true;
+                    snackbar.show();
+                }
             }
         });
 
@@ -260,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements
                         Toast.makeText(MainActivity.this, favouriteName
                                 + " was added to favourites!", Toast.LENGTH_LONG).show();
                         favouriteAdapter.swapCursor(dbHelper.getAllFavourites());
-                        if(dbHelper.getAllFavourites().getCount() > 0){
+                        if (dbHelper.getAllFavourites().getCount() > 0) {
                             noFavourites.setVisibility(View.GONE);
                         }
                     }
@@ -371,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void closeFavourites(){
+    private void closeFavourites() {
         Animation bottomDown = AnimationUtils.loadAnimation(getBaseContext(),
                 R.anim.bottom_down);
         hiddenPanelFavourites.startAnimation(bottomDown);
@@ -441,6 +473,12 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerInternetCheckReceiver();
+    }
+
     private void requestPermission() {
         // Asks for permission to use location services
         if (!isPermissionGranted()) {
@@ -493,6 +531,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
+        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -575,12 +614,106 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private void removeItem(long id){
+    private void removeItem(long id) {
         dbHelper.deleteData(id);
         favouriteAdapter.swapCursor(dbHelper.getAllFavourites());
-        if(dbHelper.getAllFavourites().getCount() == 0){
+        if (dbHelper.getAllFavourites().getCount() == 0) {
             noFavourites.setVisibility(View.VISIBLE);
         }
     }
 
+    /**
+     * Method to register runtime broadcast receiver to show snackbar alert for internet connection..
+     */
+    private void registerInternetCheckReceiver() {
+        IntentFilter internetFilter = new IntentFilter();
+        internetFilter.addAction("android.net.wifi.STATE_CHANGE");
+        internetFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(broadcastReceiver, internetFilter);
+    }
+
+    /**
+     * Runtime Broadcast receiver inner class to capture internet connectivity events
+     */
+    public BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String status = getConnectivityStatusString(context);
+            setSnackbarMessage(status, false);
+        }
+    };
+
+    public static int getConnectivityStatus(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (null != activeNetwork) {
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI)
+                return TYPE_WIFI;
+
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE)
+                return TYPE_MOBILE;
+        }
+        return TYPE_NOT_CONNECTED;
+    }
+
+    public static String getConnectivityStatusString(Context context) {
+        int conn = getConnectivityStatus(context);
+        String status = null;
+        if (conn == TYPE_WIFI) {
+            status = "Wifi enabled";
+        } else if (conn == TYPE_MOBILE) {
+            status = "Mobile data enabled";
+        } else if (conn == TYPE_NOT_CONNECTED) {
+            status = "Not connected to Internet";
+        }
+        return status;
+    }
+
+    private void setSnackbarMessage(String status, boolean showBar) {
+        String internetStatus = "";
+        if (status.equalsIgnoreCase("Wifi enabled") || status.equalsIgnoreCase("Mobile data enabled")) {
+            internetStatus = "Internet Connected";
+        } else {
+            internetStatus = "No Internet Connection";
+        }
+        snackbar = Snackbar
+                .make(relativeLayout, internetStatus, Snackbar.LENGTH_LONG)
+                .setAction("X", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar.dismiss();
+                    }
+                });
+        // Changing message text color
+        snackbar.setActionTextColor(Color.WHITE);
+        // Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.WHITE);
+        if (internetStatus.equalsIgnoreCase("No Internet Connection")) {
+            if (internetConnected) {
+                View view = snackbar.getView();
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                        LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                view.setLayoutParams(params);
+                snackbar.show();
+                snackbar.show();
+                internetConnected = false;
+            }
+        } else {
+            if (!internetConnected) {
+                View view = snackbar.getView();
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                        LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+                view.setLayoutParams(params);
+                internetConnected = true;
+                snackbar.show();
+            }
+        }
+    }
 }
+
+
