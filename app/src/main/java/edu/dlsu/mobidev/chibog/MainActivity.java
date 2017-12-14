@@ -49,8 +49,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static edu.dlsu.mobidev.chibog.R.id.map;
+import static edu.dlsu.mobidev.chibog.R.id.randomize;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements
     Location mLastLocation;
     Marker mCurrLocationMarker;
     RelativeLayout hiddenPanel, mainScreen, hiddenPanelFavourites;
-    LinearLayout pullUp, favouritesPullUp;
+    LinearLayout pullUp, favouritesPullUp, random;
     ImageButton closeListOfPlaces, closeListOfFavourites, addToFavourites;
     RecyclerView rvPlaces, rvFavourites;
     ArrayList<edu.dlsu.mobidev.chibog.Place> places;
@@ -98,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements
         get_place = findViewById(R.id.get_place);
 
         dbHelper = new DatabaseHelper(getBaseContext());
+        random = (LinearLayout) findViewById(R.id.randomize);
         noPlaces = (TextView) findViewById(R.id.no_places);
         noFavourites = (TextView)findViewById(R.id.no_places_favourites);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
@@ -129,6 +132,36 @@ public class MainActivity extends AppCompatActivity implements
 
         places = new ArrayList<>();
 
+        random.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (places.isEmpty()){
+                    Toast.makeText(getBaseContext(), "Can't randomize what's not there!",
+                            Toast.LENGTH_SHORT).show();
+                }else{
+                    mGoogleMap.clear();
+
+                    int randomNum = ThreadLocalRandom.current().nextInt(0,
+                            places.size());
+                    Place p = places.get(randomNum);
+                    MarkerOptions markerOptions = new MarkerOptions();
+
+                    String placeName = p.getName();
+                    String vicinity = p.getVicinity();
+                    double lat = p.getLat();
+                    double lng = p.getLng();
+
+                    LatLng latLng = new LatLng( lat, lng);
+                    markerOptions.position(latLng);
+                    markerOptions.title(placeName + " : "+ vicinity);
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.chibog_mini));
+                    mGoogleMap.addMarker(markerOptions);
+                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                }
+
+            }
+        });
 
         favouriteAdapter.setOnItemClickListener(new FavouriteAdapter.OnItemClickListener() {
             @Override
@@ -146,8 +179,7 @@ public class MainActivity extends AppCompatActivity implements
                     LatLng latLng = new LatLng( lat, lng);
                     markerOptions.position(latLng);
                     markerOptions.title(placeName + " : "+ vicinity);
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
-                    // TODO figure out how to place an image from a URL. There's a ImageView na sa RecyclerView
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.chibog_mini));
                     mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
