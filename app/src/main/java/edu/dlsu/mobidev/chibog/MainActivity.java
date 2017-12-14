@@ -48,8 +48,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 import static edu.dlsu.mobidev.chibog.R.id.map;
@@ -101,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements
 
         dbHelper = new DatabaseHelper(getBaseContext());
         noPlaces = (TextView) findViewById(R.id.no_places);
-        noFavourites = (TextView) findViewById(R.id.no_places_favourites);
+        noFavourites = (TextView)findViewById(R.id.no_places_favourites);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
         hiddenPanelFavourites = (RelativeLayout) findViewById(R.id.hidden_favourite);
         addToFavourites = (ImageButton) findViewById(R.id.add_favourite);
@@ -148,7 +146,8 @@ public class MainActivity extends AppCompatActivity implements
                     LatLng latLng = new LatLng( lat, lng);
                     markerOptions.position(latLng);
                     markerOptions.title(placeName + " : "+ vicinity);
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.mini_chibog));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
+                    // TODO figure out how to place an image from a URL. There's a ImageView na sa RecyclerView
                     mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -229,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements
                         Toast.makeText(MainActivity.this, favouriteName
                                 + " was added to favourites!", Toast.LENGTH_LONG).show();
                         favouriteAdapter.swapCursor(dbHelper.getAllFavourites());
-                        noFavourites.setVisibility(View.GONE);
                     }
                 });
 
