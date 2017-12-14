@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -111,6 +112,18 @@ public class MainActivity extends AppCompatActivity implements
         favouriteAdapter = new FavouriteAdapter(this, dbHelper.getAllFavourites());
         rvFavourites.setAdapter(favouriteAdapter);
 
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                removeItem((long) viewHolder.itemView.getTag());
+            }
+        }).attachToRecyclerView(rvFavourites);
+
         if(dbHelper.getAllFavourites().getCount() > 0){
             noFavourites.setVisibility(View.GONE);
         }
@@ -118,10 +131,11 @@ public class MainActivity extends AppCompatActivity implements
 
         places = new ArrayList<>();
 
+
         favouriteAdapter.setOnItemClickListener(new FavouriteAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(String name) {
-                ArrayList<Place> newList =  dbHelper.getRestaurantsFromFavourite(name);
+            public void onItemClick(long id) {
+                ArrayList<Place> newList =  dbHelper.getRestaurantsFromFavourite(id);
                 mGoogleMap.clear();
                 for (Place p: newList){
                     MarkerOptions markerOptions = new MarkerOptions();
@@ -155,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements
                 rvPlaces.setAdapter(pa);
                 rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
                         LinearLayoutManager.VERTICAL, false));
-                Toast.makeText(getBaseContext(), name + " was loaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), id + " was loaded", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -526,6 +540,14 @@ public class MainActivity extends AppCompatActivity implements
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
 
+    }
+
+    private void removeItem(long id){
+        dbHelper.deleteData(id);
+        favouriteAdapter.swapCursor(dbHelper.getAllFavourites());
+        if(dbHelper.getAllFavourites().getCount() == 0){
+            noFavourites.setVisibility(View.VISIBLE);
+        }
     }
 
 }

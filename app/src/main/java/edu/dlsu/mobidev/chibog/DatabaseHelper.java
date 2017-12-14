@@ -15,14 +15,14 @@ import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SCHEMA = "places";
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
 
     // Table Names
     private static final String TABLE_PLACE = "places";
     private static final String TABLE_RESTAURANT = "restaurants";
 
     // Common Column Names
-    private static final String KEY_ID = "_id";
+    private static final String KEY_ID = "id";
     private static final String KEY_CREATED_AT = "created_at";
 
     // Places - Column Names
@@ -93,23 +93,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 PLACE_NAME + " ASC");
     }
 
-    void deleteData (String id, String name) {
+    void deleteData (long id) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_RESTAURANT, PLACE_NAME + " = ? ", new String[]{name});
-        db.delete(TABLE_PLACE, "ID = ?",new String[] {id});
+        db.delete(TABLE_RESTAURANT, "id =" + id, null);
+        db.delete(TABLE_PLACE, "id =" + id, null);
     }
 
-    ArrayList<Place> getRestaurantsFromFavourite(String name){
+    ArrayList<Place> getRestaurantsFromFavourite(long id){
         SQLiteDatabase db = getReadableDatabase();
-        String id = null;
-        Cursor place = db.query(TABLE_PLACE, null, PLACE_NAME + " = ? ",
-                            new String[]{name}, null, null, null);
-        if (place.moveToFirst()){
-            id = place.getString(place.getColumnIndex(KEY_ID));
-            place.close();
-        }
-        Cursor result = db.query(TABLE_RESTAURANT, null, PLACE_ID + " = ? ",
-                            new String[]{id}, null, null ,null);
+        Cursor place = db.query(TABLE_PLACE, null, KEY_ID + "=" + id,
+                null, null, null, null);
+        place.close();
+        Cursor result = db.query(TABLE_RESTAURANT, null, PLACE_ID + "=" + id,
+                null, null ,null, null);
 
         ArrayList<Place> places = new ArrayList<>();
         if (result.moveToFirst()){
