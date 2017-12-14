@@ -22,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_RESTAURANT = "restaurants";
 
     // Common Column Names
-    private static final String KEY_ID = "id";
+    private static final String KEY_ID = "_id";
     private static final String KEY_CREATED_AT = "created_at";
 
     // Places - Column Names
@@ -91,6 +91,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         return db.query(TABLE_PLACE, null, null, null, null, null,
                 PLACE_NAME + " ASC");
+    }
+
+    void deleteData (String id, String name) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_RESTAURANT, PLACE_NAME + " = ? ", new String[]{name});
+        db.delete(TABLE_PLACE, "ID = ?",new String[] {id});
     }
 
     ArrayList<Place> getRestaurantsFromFavourite(String name){

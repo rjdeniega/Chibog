@@ -47,6 +47,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 import static edu.dlsu.mobidev.chibog.R.id.map;
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements
     ImageButton closeListOfPlaces, closeListOfFavourites, addToFavourites;
     RecyclerView rvPlaces, rvFavourites;
     ArrayList<edu.dlsu.mobidev.chibog.Place> places;
-    TextView noPlaces;
+    TextView noPlaces, noFavourites;
     DatabaseHelper dbHelper;
 
     View get_place;
@@ -98,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements
 
         dbHelper = new DatabaseHelper(getBaseContext());
         noPlaces = (TextView) findViewById(R.id.no_places);
+        noFavourites = (TextView) findViewById(R.id.no_places_favourites);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
         hiddenPanelFavourites = (RelativeLayout) findViewById(R.id.hidden_favourite);
         addToFavourites = (ImageButton) findViewById(R.id.add_favourite);
@@ -107,6 +110,12 @@ public class MainActivity extends AppCompatActivity implements
         rvFavourites.setLayoutManager(new LinearLayoutManager(this));
         favouriteAdapter = new FavouriteAdapter(this, dbHelper.getAllFavourites());
         rvFavourites.setAdapter(favouriteAdapter);
+
+        if(dbHelper.getAllFavourites().getCount() > 0){
+            noFavourites.setVisibility(View.GONE);
+        }
+        Log.i("fav", dbHelper.getAllFavourites().getCount() + "");
+
         places = new ArrayList<>();
 
         favouriteAdapter.setOnItemClickListener(new FavouriteAdapter.OnItemClickListener() {
@@ -126,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements
                     markerOptions.position(latLng);
                     markerOptions.title(placeName + " : "+ vicinity);
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.mini_chibog));
-                    // TODO figure out how to place an image from a URL. There's a ImageView na sa RecyclerView
                     mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -207,6 +215,7 @@ public class MainActivity extends AppCompatActivity implements
                         Toast.makeText(MainActivity.this, favouriteName
                                 + " was added to favourites!", Toast.LENGTH_LONG).show();
                         favouriteAdapter.swapCursor(dbHelper.getAllFavourites());
+                        noFavourites.setVisibility(View.GONE);
                     }
                 });
 
