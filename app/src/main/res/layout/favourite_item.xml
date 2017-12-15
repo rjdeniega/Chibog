@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/master_layout"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:background="?attr/selectableItemBackground"
@@ -10,13 +10,22 @@
     android:focusable="true"
     android:layout_marginTop="10dp"
     android:layout_marginBottom="10dp">
+    <ImageView
+        android:alpha="0.2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#cecece"
+        />
     <TextView
         android:layout_centerInParent="true"
-        android:layout_marginStart="10dp"
-        android:layout_alignParentStart="true"
         android:id="@+id/favourite_name"
-        android:textSize="26sp"
+        android:layout_marginTop="5dp"
+        android:textSize="20sp"
+        android:text="sample"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"/>
+        android:textStyle="normal"
+        />
+
+
 </RelativeLayout>

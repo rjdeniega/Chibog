@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements
     ImageButton closeListOfPlaces, closeListOfFavourites, addToFavourites;
     RecyclerView rvPlaces, rvFavourites;
     ArrayList<edu.dlsu.mobidev.chibog.Place> places;
-    TextView noPlaces, noFavourites;
+    TextView noPlaces, noFavourites,tvAddFavourite ;
     DatabaseHelper dbHelper;
     public static int TYPE_WIFI = 1;
     public static int TYPE_MOBILE = 2;
@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
         hiddenPanelFavourites = (RelativeLayout) findViewById(R.id.hidden_favourite);
         addToFavourites = (ImageButton) findViewById(R.id.add_favourite);
+        tvAddFavourite = (TextView) findViewById(R.id.tv_fav);
         mainScreen = (RelativeLayout) findViewById(R.id.main_screen);
         rvPlaces = (RecyclerView) findViewById(R.id.rv_places);
         rvFavourites = (RecyclerView) findViewById(R.id.rv_favourites);
@@ -200,13 +201,14 @@ public class MainActivity extends AppCompatActivity implements
                     LatLng latLng = new LatLng(lat, lng);
                     markerOptions.position(latLng);
                     markerOptions.title(placeName + " : " + vicinity);
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.chibog_mini));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_chibog_logo));
                     mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
                 closeFavourites();
                 addToFavourites.setVisibility(View.GONE);
+                tvAddFavourite.setVisibility(View.GONE);
                 rvPlaces.setVisibility(View.VISIBLE);
                 noPlaces.setVisibility(View.GONE);
                 pa = new PlaceAdapter(newList);
@@ -274,6 +276,8 @@ public class MainActivity extends AppCompatActivity implements
                         rvPlaces.setVisibility(View.VISIBLE);
                         noPlaces.setVisibility(View.GONE);
                         pa = new PlaceAdapter(places);
+                        tvAddFavourite.setVisibility(View.VISIBLE);
+
                         addToFavourites.setVisibility(View.VISIBLE);
                         pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
                             @Override
@@ -290,7 +294,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
-
 
         pullUp = (LinearLayout) findViewById(R.id.pull_up);
         closeListOfPlaces = (ImageButton) findViewById(R.id.close_list);
