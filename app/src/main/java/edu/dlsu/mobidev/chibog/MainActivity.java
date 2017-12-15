@@ -230,41 +230,63 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 String status = getConnectivityStatusString(getBaseContext());
-                if (!status.equalsIgnoreCase("Not connected to Internet")){
-                    places.clear();
-                    Object dataTransfer[] = new Object[3];
-                    GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                    mGoogleMap.clear();
-                    String url = getUrl(latitude, longitude, "restaurant");
-                    dataTransfer[0] = mGoogleMap;
-                    dataTransfer[1] = url;
-                    dataTransfer[2] = places;
-
-                    getNearbyPlacesData.execute(dataTransfer);
-
-                    Toast.makeText(MainActivity.this, "Showing Nearby Restaurants", Toast.LENGTH_SHORT).show();
-                    rvPlaces.setVisibility(View.VISIBLE);
-                    noPlaces.setVisibility(View.GONE);
-                    pa = new PlaceAdapter(places);
-                    addToFavourites.setVisibility(View.VISIBLE);
-                    pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
-                            Toast.makeText(getBaseContext(), "User clicked on " + p.getName(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    rvPlaces.setAdapter(pa);
-                    rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
-                            LinearLayoutManager.VERTICAL, false));
-                }else{
+                Log.i("status",status);
+                if (status.equalsIgnoreCase("No internet connection")) {
+                    snackbar = Snackbar
+                            .make(relativeLayout, status, Snackbar.LENGTH_LONG)
+                            .setAction("X", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    snackbar.dismiss();
+                                }
+                            });
+                    // Changing message text color
+                    snackbar.setActionTextColor(Color.WHITE);
+                    // Changing action button text color
+                    View sbView = snackbar.getView();
+                    TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                    textView.setTextColor(Color.WHITE);
+                    Log.i("status", status);
                     View view2 = snackbar.getView();
                     RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,
                             LayoutParams.WRAP_CONTENT);
                     params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
                     view2.setLayoutParams(params);
-                    internetConnected = true;
                     snackbar.show();
+                    snackbar.show();
+                    internetConnected = false;
+
+                } else {
+                    if (internetConnected) {
+                        internetConnected = true;
+                        places.clear();
+                        Object dataTransfer[] = new Object[3];
+                        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                        mGoogleMap.clear();
+                        String url = getUrl(latitude, longitude, "restaurant");
+                        dataTransfer[0] = mGoogleMap;
+                        dataTransfer[1] = url;
+                        dataTransfer[2] = places;
+
+                        getNearbyPlacesData.execute(dataTransfer);
+
+                        Toast.makeText(MainActivity.this, "Showing Nearby Restaurants", Toast.LENGTH_SHORT).show();
+                        rvPlaces.setVisibility(View.VISIBLE);
+                        noPlaces.setVisibility(View.GONE);
+                        pa = new PlaceAdapter(places);
+                        addToFavourites.setVisibility(View.VISIBLE);
+                        pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
+                                Toast.makeText(getBaseContext(), "User clicked on " + p.getName(),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        rvPlaces.setAdapter(pa);
+                        rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
+                                LinearLayoutManager.VERTICAL, false));
+                    }
+
                 }
             }
         });
@@ -665,7 +687,7 @@ public class MainActivity extends AppCompatActivity implements
         } else if (conn == TYPE_MOBILE) {
             status = "Mobile data enabled";
         } else if (conn == TYPE_NOT_CONNECTED) {
-            status = "Not connected to Internet";
+            status = "No internet connection";
         }
         return status;
     }
