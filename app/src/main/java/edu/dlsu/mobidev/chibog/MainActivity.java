@@ -16,9 +16,11 @@ import android.graphics.Color;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<edu.dlsu.mobidev.chibog.Place> places;
     TextView noPlaces, noFavourites,tvAddFavourite ;
     DatabaseHelper dbHelper;
+    FloatingActionButton undo;
     public static int TYPE_WIFI = 1;
     public static int TYPE_MOBILE = 2;
     public static int TYPE_NOT_CONNECTED = 0;
@@ -122,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements
 
         dbHelper = new DatabaseHelper(getBaseContext());
         random = (LinearLayout) findViewById(R.id.randomize);
+        undo = (FloatingActionButton) findViewById(R.id.undo_button);
         noPlaces = (TextView) findViewById(R.id.no_places);
         noFavourites = (TextView) findViewById(R.id.no_places_favourites);
         hiddenPanel = (RelativeLayout) findViewById(R.id.hidden_panel);
@@ -178,10 +182,35 @@ public class MainActivity extends AppCompatActivity implements
                     markerOptions.title(placeName + " : " + vicinity);
                     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.chibog_mini));
                     mGoogleMap.addMarker(markerOptions);
+                    mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(1));
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                    undo.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
+        undo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mGoogleMap.clear();
+                for (Place p : places) {
+                    MarkerOptions markerOptions = new MarkerOptions();
+
+                    String placeName = p.getName();
+                    String vicinity = p.getVicinity();
+                    double lat = p.getLat();
+                    double lng = p.getLng();
+
+                    LatLng latLng = new LatLng(lat, lng);
+                    markerOptions.position(latLng);
+                    markerOptions.title(placeName + " : " + vicinity);
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_chibog_logo));
+                    mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
                 }
-
+                undo.setVisibility(View.GONE);
             }
         });
 
