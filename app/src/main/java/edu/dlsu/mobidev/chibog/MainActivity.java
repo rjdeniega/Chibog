@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements
                     LatLng latLng = new LatLng(lat, lng);
                     markerOptions.position(latLng);
                     markerOptions.title(placeName + " : " + vicinity);
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_chibog_logo));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
                     mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements
                     LatLng latLng = new LatLng(lat, lng);
                     markerOptions.position(latLng);
                     markerOptions.title(placeName + " : " + vicinity);
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_chibog_logo));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
                     mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));

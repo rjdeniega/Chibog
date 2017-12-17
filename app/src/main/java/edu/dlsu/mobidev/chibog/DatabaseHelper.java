@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SCHEMA = "places";
-    private static final int VERSION = 4;
+    private static final int VERSION = 5;
 
     // Table Names
     private static final String TABLE_PLACE = "places";
