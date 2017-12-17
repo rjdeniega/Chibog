@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements
                 rvPlaces.setAdapter(pa);
                 rvPlaces.setLayoutManager(new LinearLayoutManager(getBaseContext(),
                         LinearLayoutManager.VERTICAL, false));
-                Toast.makeText(getBaseContext(), id + " was loaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), "location loaded", Toast.LENGTH_SHORT).show();
             }
         });
 
