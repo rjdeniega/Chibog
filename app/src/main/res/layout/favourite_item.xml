@@ -1,31 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/master_layout"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp">
-    <ImageView
-        android:alpha="0.2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#cecece"
-        />
-    <TextView
-        android:layout_centerInParent="true"
-        android:id="@+id/favourite_name"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginTop="5dp"
-        android:textSize="20sp"
-        android:text="sample"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/circle"
+        android:layout_marginLeft="5dp">
+        <TextView
+            android:id="@+id/places_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="23"
+            android:layout_marginTop="15dp"
+            android:textColor="#ff1e1e"
+            android:layout_centerHorizontal="true"
+            android:textSize="16sp"
+             />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="33dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="18dp"
+            android:textSize="8sp"
+            android:text="saved" />
+
+    </RelativeLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="normal"
-        />
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/favourite_name"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="3dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="Name"
+            android:textSize="19sp"
+            android:textStyle="bold" />
 
-</RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

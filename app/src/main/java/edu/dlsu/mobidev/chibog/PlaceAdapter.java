@@ -59,8 +59,6 @@ public class PlaceAdapter extends RecyclerView.Adapter<PlaceAdapter.PlaceHolder>
 
         public PlaceHolder(View itemView){
             super(itemView);
-
-            ivPlace = (ImageView) itemView.findViewById(R.id.place_icon);
             tvPlaceName = (TextView) itemView.findViewById(R.id.place_name);
             tvPlaceVicinity = (TextView) itemView.findViewById(R.id.place_vicinity);
         }
