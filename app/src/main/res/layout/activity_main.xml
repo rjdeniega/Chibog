@@ -211,6 +211,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="5dp"
+                android:visibility="gone"
                 android:textSize="10dp"
                 android:textColor="#ff6c6c"
                 android:fontFamily="sans-serif-black"
