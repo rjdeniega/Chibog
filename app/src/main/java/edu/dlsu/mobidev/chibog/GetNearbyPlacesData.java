@@ -63,7 +63,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             LatLng latLng = new LatLng( lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(placeName + " : "+ vicinity);
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_chibog_logo));
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
 
             // TODO figure out how to place an image from a URL. There's a ImageView na sa RecyclerView
 

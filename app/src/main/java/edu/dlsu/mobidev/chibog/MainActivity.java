@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements
                     LatLng latLng = new LatLng(lat, lng);
                     markerOptions.position(latLng);
                     markerOptions.title(placeName + " : " + vicinity);
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.chibog_mini));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_random_icon_));
                     mGoogleMap.addMarker(markerOptions);
                     mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(1));
                     mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
