@@ -63,6 +63,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static edu.dlsu.mobidev.chibog.R.id.map;
@@ -111,9 +112,11 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
 
-        // This adds a map to the layout
-        if (isServicesOK()) initializeMap();
         requestPermission();
+
+        // This adds a map to the layout
+        if (isServicesOK())
+            initializeMap();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         relativeLayout = (RelativeLayout) findViewById(R.id.relative_layout);
@@ -245,8 +248,29 @@ public class MainActivity extends AppCompatActivity implements
                 pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
-                        Toast.makeText(getBaseContext(), "User clicked on " + p.getName(),
+                        Toast.makeText(getBaseContext(), p.getName(),
                                 Toast.LENGTH_SHORT).show();
+                        mGoogleMap.clear();
+                        for (Place a : places) {
+                            if(Objects.equals(a.getName(), p.getName())){
+                                MarkerOptions markerOptions = new MarkerOptions();
+
+                                String placeName = p.getName();
+                                String vicinity = p.getVicinity();
+                                double lat = p.getLat();
+                                double lng = p.getLng();
+
+                                LatLng latLng = new LatLng(lat, lng);
+                                markerOptions.position(latLng);
+                                markerOptions.title(placeName + " : " + vicinity);
+                                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
+                                mGoogleMap.addMarker(markerOptions);
+                                mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
+                                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                            }
+                        }
+                        closePlace();
+                        undo.setVisibility(View.VISIBLE);
                     }
                 });
                 rvPlaces.setAdapter(pa);
@@ -311,8 +335,29 @@ public class MainActivity extends AppCompatActivity implements
                         pa.setOnItemClickListener(new PlaceAdapter.OnItemClickListener() {
                             @Override
                             public void onItemClick(edu.dlsu.mobidev.chibog.Place p) {
-                                Toast.makeText(getBaseContext(), "User clicked on " + p.getName(),
+                                Toast.makeText(getBaseContext(), p.getName(),
                                         Toast.LENGTH_SHORT).show();
+                                mGoogleMap.clear();
+                                for (Place a : places) {
+                                    if(Objects.equals(a.getName(), p.getName())){
+                                        MarkerOptions markerOptions = new MarkerOptions();
+
+                                        String placeName = p.getName();
+                                        String vicinity = p.getVicinity();
+                                        double lat = p.getLat();
+                                        double lng = p.getLng();
+
+                                        LatLng latLng = new LatLng(lat, lng);
+                                        markerOptions.position(latLng);
+                                        markerOptions.title(placeName + " : " + vicinity);
+                                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
+                                        mGoogleMap.addMarker(markerOptions);
+                                        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(2));
+                                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+                                    }
+                                }
+                                closePlace();
+                                undo.setVisibility(View.VISIBLE);
                             }
                         });
                         rvPlaces.setAdapter(pa);
@@ -367,26 +412,7 @@ public class MainActivity extends AppCompatActivity implements
         closeListOfPlaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Animation bottomDown = AnimationUtils.loadAnimation(getBaseContext(),
-                        R.anim.bottom_down);
-                hiddenPanel.startAnimation(bottomDown);
-
-                bottomDown.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                        mainScreen.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        hiddenPanel.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
+                closePlace();
             }
         });
 
@@ -453,6 +479,29 @@ public class MainActivity extends AppCompatActivity implements
 
                     }
                 });
+            }
+        });
+    }
+
+    private void closePlace(){
+        Animation bottomDown = AnimationUtils.loadAnimation(getBaseContext(),
+                R.anim.bottom_down);
+        hiddenPanel.startAnimation(bottomDown);
+
+        bottomDown.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                mainScreen.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                hiddenPanel.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
             }
         });
     }
@@ -550,7 +599,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSION_FINE_LOCATION:
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getApplicationContext(), "This app requires location services", Toast.LENGTH_LONG).show();
                     finish();
                 }
